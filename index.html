@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ka">
 <head>
 <meta charset="UTF-8">
@@ -10,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 * {
   box-sizing: border-box;
 }
@@ -65,6 +65,12 @@ button {
 
 button:active {
   transform: scale(.98);
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .primary {
@@ -486,6 +492,29 @@ textarea {
 }
 
 /* =========================
+   IMPORT CONTACT BUTTON
+========================= */
+
+.import-contact-button {
+  width: 100%;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 18px;
+}
+
+.import-info {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 13px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+/* =========================
    DETAILS
 ========================= */
 
@@ -566,6 +595,17 @@ body.dark .birthday {
   text-align: center;
   color: var(--muted);
   padding: 25px;
+}
+
+/* =========================
+   PHOTO OPTIMIZATION STATUS
+========================= */
+
+.photo-status {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
 /* =========================
@@ -673,391 +713,432 @@ body.is-admin .admin-badge {
     padding-left: 10px;
     padding-right: 10px;
   }
-}
-</style>
 
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- =========================
+<!-- =========================================================
      AUTH
-========================= -->
+========================================================= -->
 
 <div id="authScreen" class="auth-screen">
 
   <div class="auth-box">
 
-```
-<div class="auth-logo">📕</div>
+    <div class="auth-logo">📕</div>
 
-<h1>საკონტაქტო წიგნი</h1>
+    <h1>საკონტაქტო წიგნი</h1>
 
-<p class="auth-subtitle">
-  პირადი და საერთო კონტაქტების წიგნი
-</p>
+    <p class="auth-subtitle">
+      პირადი და საერთო კონტაქტების წიგნი
+    </p>
 
-<div class="form-group">
-  <label>ელფოსტა</label>
-  <input
-    id="authEmail"
-    type="email"
-    placeholder="შეიყვანე ელფოსტა"
-    autocomplete="email"
-  >
-</div>
+    <div class="form-group">
 
-<div class="form-group">
-  <label>პაროლი</label>
-  <input
-    id="authPassword"
-    type="password"
-    placeholder="შეიყვანე პაროლი"
-    autocomplete="current-password"
-  >
-</div>
+      <label>ელფოსტა</label>
 
-<div class="auth-actions">
+      <input
+        id="authEmail"
+        type="email"
+        placeholder="შეიყვანე ელფოსტა"
+        autocomplete="email"
+      >
 
-  <button
-    class="primary"
-    onclick="login()"
-  >
-    შესვლა
-  </button>
+    </div>
 
-  <button
-    class="secondary"
-    onclick="register()"
-  >
-    რეგისტრაცია
-  </button>
+    <div class="form-group">
 
-</div>
+      <label>პაროლი</label>
 
-<p id="authMessage"></p>
-```
+      <input
+        id="authPassword"
+        type="password"
+        placeholder="შეიყვანე პაროლი"
+        autocomplete="current-password"
+      >
+
+    </div>
+
+    <div class="auth-actions">
+
+      <button
+        class="primary"
+        onclick="login()"
+      >
+        შესვლა
+      </button>
+
+      <button
+        class="secondary"
+        onclick="register()"
+      >
+        რეგისტრაცია
+      </button>
+
+    </div>
+
+    <p id="authMessage"></p>
 
   </div>
 
 </div>
 
-<!-- =========================
+
+<!-- =========================================================
      APP
-========================= -->
+========================================================= -->
 
 <div id="app" class="hidden">
 
-<header>
+  <header>
 
-  <div class="header-inner">
+    <div class="header-inner">
 
-```
-<div class="logo">
-  📕 საკონტაქტო წიგნი
-</div>
+      <div class="logo">
+        📕 საკონტაქტო წიგნი
+      </div>
 
-<div class="header-actions">
+      <div class="header-actions">
 
-  <span class="admin-badge">
-    👑 Admin
-  </span>
+        <span class="admin-badge">
+          👑 Admin
+        </span>
 
-  <button
-    class="primary admin-only"
-    onclick="openAddModal()"
-  >
-    + კონტაქტი
-  </button>
+        <button
+          class="primary admin-only"
+          onclick="openAddModal()"
+        >
+          + კონტაქტი
+        </button>
 
-  <button
-    id="themeButton"
-    class="theme-button"
-    onclick="toggleTheme()"
-  >
-    🌙
-  </button>
+        <button
+          id="themeButton"
+          class="theme-button"
+          onclick="toggleTheme()"
+        >
+          🌙
+        </button>
 
-  <button
-    class="secondary"
-    onclick="logout()"
-  >
-    გასვლა
-  </button>
+        <button
+          class="secondary"
+          onclick="logout()"
+        >
+          გასვლა
+        </button>
 
-</div>
-```
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <div class="search">
+
+    <div class="search-box">
+
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="🔎 მოძებნე სახელი, გვარი, ტელეფონი, ელფოსტა..."
+        oninput="renderContacts()"
+        autocomplete="off"
+      >
+
+      <button
+        id="clearSearch"
+        class="clear-search"
+        onclick="clearSearch()"
+        aria-label="ძებნის გასუფთავება"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="search-hint">
+      ძებნა მუშაობს სახელზე, გვარზე, მამის სახელზე, ტელეფონზე,
+      ელფოსტაზე, მისამართზე და შენიშვნაზე.
+    </div>
 
   </div>
 
-</header>
 
-<div class="search">
+  <div class="container">
 
-  <div class="search-box">
+    <div id="status" class="status">
+      იტვირთება...
+    </div>
 
-```
-<input
-  id="searchInput"
-  type="search"
-  placeholder="🔎 მოძებნე სახელი, გვარი, ტელეფონი, ელფოსტა..."
-  oninput="renderContacts()"
-  autocomplete="off"
->
+    <div id="cards" class="cards"></div>
 
-<button
-  id="clearSearch"
-  class="clear-search"
-  onclick="clearSearch()"
-  aria-label="ძებნის გასუფთავება"
->
-  ×
-</button>
-```
-
-  </div>
-
-  <div class="search-hint">
-    ძებნა მუშაობს სახელზე, გვარზე, მამის სახელზე, ტელეფონზე,
-    ელფოსტაზე, მისამართზე და შენიშვნაზე.
   </div>
 
 </div>
 
-<div class="container">
 
-  <div id="status" class="status">
-    იტვირთება...
-  </div>
-
-  <div id="cards" class="cards"></div>
-
-</div>
-
-</div>
-
-<!-- =========================
+<!-- =========================================================
      DETAILS MODAL
-========================= -->
+========================================================= -->
 
 <div id="detailsModal" class="modal-bg">
 
   <div class="modal">
 
-```
-<h2>კონტაქტის ინფორმაცია</h2>
+    <h2>კონტაქტის ინფორმაცია</h2>
 
-<div id="detailsContent"></div>
+    <div id="detailsContent"></div>
 
-<div class="actions">
+    <div class="actions">
 
-  <button
-    class="secondary"
-    onclick="closeModal('detailsModal')"
-  >
-    დახურვა
-  </button>
+      <button
+        class="secondary"
+        onclick="closeModal('detailsModal')"
+      >
+        დახურვა
+      </button>
 
-  <button
-    id="editButton"
-    class="primary admin-only"
-    onclick="editCurrentContact()"
-  >
-    ✏️ რედაქტირება
-  </button>
+      <button
+        id="editButton"
+        class="primary admin-only"
+        onclick="editCurrentContact()"
+      >
+        ✏️ რედაქტირება
+      </button>
 
-  <button
-    id="deleteButton"
-    class="danger admin-only"
-    onclick="deleteCurrentContact()"
-  >
-    🗑️ წაშლა
-  </button>
+      <button
+        id="deleteButton"
+        class="danger admin-only"
+        onclick="deleteCurrentContact()"
+      >
+        🗑️ წაშლა
+      </button>
 
-</div>
-```
+    </div>
 
   </div>
 
 </div>
 
-<!-- =========================
+
+<!-- =========================================================
      CONTACT FORM
-========================= -->
+========================================================= -->
 
 <div id="formModal" class="modal-bg">
 
   <div class="modal">
 
-```
-<h2 id="formTitle">
-  ახალი კონტაქტი
-</h2>
+    <h2 id="formTitle">
+      ახალი კონტაქტი
+    </h2>
 
-<input
-  type="hidden"
-  id="contactId"
->
+    <button
+      type="button"
+      class="secondary import-contact-button"
+      onclick="importPhoneContact()"
+    >
+      📱 ტელეფონის კონტაქტიდან დამატება
+    </button>
 
-<div class="form-group">
+    <div class="import-info">
+      📱 აირჩიე კონტაქტი ტელეფონის წიგნიდან და სახელი,
+      გვარი, ტელეფონები და ელფოსტები ავტომატურად შეივსება.
+      შემდეგ შეგიძლია მონაცემების შეცვლა და შენახვა.
+    </div>
 
-  <label>სახელი *</label>
-
-  <input
-    id="firstName"
-    placeholder="სახელი"
-  >
-
-</div>
-
-
-<div class="form-group">
-
-  <label>გვარი *</label>
-
-  <input
-    id="lastName"
-    placeholder="გვარი"
-  >
-
-</div>
+    <input
+      type="hidden"
+      id="contactId"
+    >
 
 
-<div class="form-group">
+    <!-- NAME -->
 
-  <label>მამის სახელი</label>
+    <div class="form-group">
 
-  <input
-    id="fatherName"
-    placeholder="მამის სახელი"
-  >
+      <label>სახელი *</label>
 
-</div>
+      <input
+        id="firstName"
+        placeholder="სახელი"
+        autocomplete="given-name"
+      >
 
-
-<div class="form-group">
-
-  <label>დაბადების თარიღი</label>
-
-  <input
-    id="birthday"
-    type="date"
-  >
-
-</div>
+    </div>
 
 
-<!-- PHONES -->
+    <!-- LAST NAME -->
 
-<div class="form-group">
+    <div class="form-group">
 
-  <label>📞 ტელეფონები</label>
+      <label>გვარი *</label>
 
-  <div id="phones"></div>
+      <input
+        id="lastName"
+        placeholder="გვარი"
+        autocomplete="family-name"
+      >
 
-  <button
-    class="secondary"
-    onclick="addPhone()"
-  >
-    + ტელეფონი
-  </button>
-
-</div>
+    </div>
 
 
-<!-- EMAILS -->
+    <!-- FATHER NAME -->
 
-<div class="form-group">
+    <div class="form-group">
 
-  <label>✉️ ელფოსტები</label>
+      <label>მამის სახელი</label>
 
-  <div id="emails"></div>
+      <input
+        id="fatherName"
+        placeholder="მამის სახელი"
+      >
 
-  <button
-    class="secondary"
-    onclick="addEmail()"
-  >
-    + ელფოსტა
-  </button>
-
-</div>
+    </div>
 
 
-<!-- ADDRESSES -->
+    <!-- BIRTHDAY -->
 
-<div class="form-group">
+    <div class="form-group">
 
-  <label>🏠 საცხოვრებელი მისამართები</label>
+      <label>დაბადების თარიღი</label>
 
-  <div id="addresses"></div>
+      <input
+        id="birthday"
+        type="date"
+      >
 
-  <button
-    class="secondary"
-    onclick="addAddress()"
-  >
-    + საცხოვრებელი
-  </button>
-
-</div>
+    </div>
 
 
-<!-- PHOTO -->
+    <!-- PHONES -->
 
-<div class="form-group">
+    <div class="form-group">
 
-  <label>📷 ფოტო</label>
+      <label>📞 ტელეფონები</label>
 
-  <input
-    id="photo"
-    type="file"
-    accept="image/*"
-    onchange="previewPhoto(event)"
-  >
+      <div id="phones"></div>
 
-  <img
-    id="photoPreview"
-    class="preview hidden"
-  >
+      <button
+        type="button"
+        class="secondary"
+        onclick="addPhone()"
+      >
+        + ტელეფონი
+      </button>
 
-</div>
+    </div>
 
 
-<!-- NOTE -->
+    <!-- EMAILS -->
 
-<div class="form-group">
+    <div class="form-group">
 
-  <label>📝 შენიშვნა</label>
+      <label>✉️ ელფოსტები</label>
 
-  <textarea
-    id="note"
-    placeholder="დამატებითი ინფორმაცია..."
-  ></textarea>
+      <div id="emails"></div>
 
-</div>
+      <button
+        type="button"
+        class="secondary"
+        onclick="addEmail()"
+      >
+        + ელფოსტა
+      </button>
+
+    </div>
 
 
-<div class="actions">
+    <!-- ADDRESSES -->
 
-  <button
-    class="primary"
-    onclick="saveContact()"
-  >
-    💾 შენახვა
-  </button>
+    <div class="form-group">
 
-  <button
-    class="secondary"
-    onclick="closeModal('formModal')"
-  >
-    გაუქმება
-  </button>
+      <label>🏠 საცხოვრებელი მისამართები</label>
 
-</div>
-```
+      <div id="addresses"></div>
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="addAddress()"
+      >
+        + საცხოვრებელი
+      </button>
+
+    </div>
+
+
+    <!-- PHOTO -->
+
+    <div class="form-group">
+
+      <label>📷 ფოტო</label>
+
+      <input
+        id="photo"
+        type="file"
+        accept="image/*"
+        onchange="previewPhoto(event)"
+      >
+
+      <img
+        id="photoPreview"
+        class="preview hidden"
+        alt="ფოტოს წინასწარი ნახვა"
+      >
+
+      <div
+        id="photoStatus"
+        class="photo-status"
+      ></div>
+
+    </div>
+
+
+    <!-- NOTE -->
+
+    <div class="form-group">
+
+      <label>📝 შენიშვნა</label>
+
+      <textarea
+        id="note"
+        placeholder="დამატებითი ინფორმაცია..."
+      ></textarea>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+      <button
+        id="saveButton"
+        class="primary"
+        onclick="saveContact()"
+      >
+        💾 შენახვა
+      </button>
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="closeModal('formModal')"
+      >
+        გაუქმება
+      </button>
+
+    </div>
 
   </div>
 
 </div>
+
 
 <script>
 
@@ -1084,7 +1165,7 @@ let isAdmin = false;
 
 
 /* =========================================================
-   SMART SEARCH HELPERS
+   SMART SEARCH
 ========================================================= */
 
 function normalizeSearch(value) {
@@ -1162,28 +1243,10 @@ function contactMatches(contact, query) {
     getContactSearchText(contact);
 
 
-  /*
-     ჩვეულებრივი ნაწილობრივი ძებნა.
-     მაგალითად:
-     დათო → დათო
-     ბერ → ბერიძე
-  */
-
   if (searchData.text.includes(q)) {
     return true;
   }
 
-
-  /*
-     ტელეფონის სპეციალური ძებნა.
-
-     მაგალითად:
-     "599 12"
-     ან
-     "59912"
-
-     ორივე მოძებნის ერთსა და იმავე ნომერს.
-  */
 
   const phoneQuery =
     normalizePhone(q);
@@ -1230,16 +1293,19 @@ async function login() {
   }
 
 
-  setAuthMessage("მიმდინარეობს შესვლა...");
+  setAuthMessage(
+    "მიმდინარეობს შესვლა..."
+  );
 
 
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-
-      email,
-      password
-
-    });
+  const {
+    error
+  } =
+    await supabaseClient.auth
+      .signInWithPassword({
+        email,
+        password
+      });
 
 
   if (error) {
@@ -1253,6 +1319,7 @@ async function login() {
 
 
   await initializeApp();
+
 }
 
 
@@ -1295,13 +1362,14 @@ async function register() {
   );
 
 
-  const { error } =
-    await supabaseClient.auth.signUp({
-
-      email,
-      password
-
-    });
+  const {
+    error
+  } =
+    await supabaseClient.auth
+      .signUp({
+        email,
+        password
+      });
 
 
   if (error) {
@@ -1323,8 +1391,9 @@ async function register() {
 
 function setAuthMessage(message) {
 
-  document.getElementById("authMessage")
-    .textContent =
+  document.getElementById(
+    "authMessage"
+  ).textContent =
     message;
 
 }
@@ -1354,7 +1423,8 @@ async function initializeApp() {
       session
     }
   } =
-    await supabaseClient.auth.getSession();
+    await supabaseClient.auth
+      .getSession();
 
 
   if (!session) {
@@ -1402,10 +1472,13 @@ async function checkAdmin() {
       user
     }
   } =
-    await supabaseClient.auth.getUser();
+    await supabaseClient.auth
+      .getUser();
 
 
-  if (!user) return;
+  if (!user) {
+    return;
+  }
 
 
   const {
@@ -1441,8 +1514,9 @@ async function checkAdmin() {
 
 async function loadContacts() {
 
-  document.getElementById("status")
-    .textContent =
+  document.getElementById(
+    "status"
+  ).textContent =
     "იტვირთება...";
 
 
@@ -1463,22 +1537,19 @@ async function loadContacts() {
 
   if (error) {
 
-    document.getElementById("status")
-      .textContent =
-      "შეცდომა: " + error.message;
+    document.getElementById(
+      "status"
+    ).textContent =
+      "შეცდომა: " +
+      error.message;
 
     return;
   }
 
 
-  contacts = data || [];
+  contacts =
+    data || [];
 
-
-  /*
-     PRIVATE STORAGE
-
-     photo_url-ში ვინახავთ მხოლოდ Storage path-ს.
-  */
 
   await Promise.all(
 
@@ -1535,14 +1606,19 @@ async function loadContacts() {
 function renderContacts() {
 
   const input =
-    document.getElementById("searchInput");
+    document.getElementById(
+      "searchInput"
+    );
+
 
   const query =
     input.value;
 
 
   const clearButton =
-    document.getElementById("clearSearch");
+    document.getElementById(
+      "clearSearch"
+    );
 
 
   clearButton.style.display =
@@ -1562,16 +1638,20 @@ function renderContacts() {
 
 
   const cards =
-    document.getElementById("cards");
+    document.getElementById(
+      "cards"
+    );
 
 
-  cards.innerHTML = "";
+  cards.innerHTML =
+    "";
 
 
   if (!filtered.length) {
 
-    document.getElementById("status")
-      .textContent =
+    document.getElementById(
+      "status"
+    ).textContent =
       query.trim()
         ? "ძიების შედეგი: 0 კონტაქტი"
         : "კონტაქტები ვერ მოიძებნა.";
@@ -1579,8 +1659,10 @@ function renderContacts() {
 
     cards.innerHTML = `
 
-      <div class="empty-state"
-           style="grid-column:1/-1;">
+      <div
+        class="empty-state"
+        style="grid-column:1/-1;"
+      >
 
         <div class="empty-icon">
           🔎
@@ -1602,8 +1684,9 @@ function renderContacts() {
   }
 
 
-  document.getElementById("status")
-    .textContent =
+  document.getElementById(
+    "status"
+  ).textContent =
     query.trim()
       ? `ნაპოვნია ${filtered.length} კონტაქტი`
       : `${filtered.length} კონტაქტი`;
@@ -1613,7 +1696,10 @@ function renderContacts() {
     contact => {
 
       const card =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       card.className =
         "card";
@@ -1639,7 +1725,7 @@ function renderContacts() {
             <img
               src="${escapeHtml(image)}"
               alt="ფოტო"
-              onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>👤</div>'"
+              onerror="this.parentElement.innerHTML='<div class=&quot;photo-placeholder&quot;>👤</div>'"
             >
           `
           : `
@@ -1694,7 +1780,9 @@ function renderContacts() {
       `;
 
 
-      cards.appendChild(card);
+      cards.appendChild(
+        card
+      );
 
     }
   );
@@ -1714,7 +1802,8 @@ function clearSearch() {
     );
 
 
-  input.value = "";
+  input.value =
+    "";
 
   input.focus();
 
@@ -1736,14 +1825,17 @@ function openDetails(contact) {
   const phones =
     contact.contact_phones || [];
 
+
   const emails =
     contact.contact_emails || [];
+
 
   const addresses =
     contact.contact_addresses || [];
 
 
-  let html = "";
+  let html =
+    "";
 
 
   if (contact.photo_signed_url) {
@@ -1764,17 +1856,17 @@ function openDetails(contact) {
 
     html += `
 
-      <div class="details-photo"
-           style="
-             display:flex;
-             align-items:center;
-             justify-content:center;
-             font-size:65px;
-             background:var(--surface-2);
-           ">
-
+      <div
+        class="details-photo"
+        style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:65px;
+          background:var(--surface-2);
+        "
+      >
         👤
-
       </div>
 
     `;
@@ -1870,9 +1962,7 @@ function openDetails(contact) {
     html += `
 
       <div class="birthday">
-
         🎂 დაბადების დღე ახლოვდება!
-
       </div>
 
     `;
@@ -1998,7 +2088,7 @@ function openDetails(contact) {
         const mapUrl =
           address.map_url ||
           `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-            address.address
+            address.address || ""
           )}`;
 
 
@@ -2007,20 +2097,14 @@ function openDetails(contact) {
           <div class="item">
 
             <div class="item-title">
-
               საცხოვრებელი ${index + 1}
-
             </div>
 
-
             <div>
-
               ${escapeHtml(
                 address.address || ""
               )}
-
             </div>
-
 
             <a
               class="address-map"
@@ -2030,9 +2114,7 @@ function openDetails(contact) {
               target="_blank"
               rel="noopener noreferrer"
             >
-
               🗺️ ამ მისამართის რუკაზე გახსნა
-
             </a>
 
           </div>
@@ -2066,19 +2148,15 @@ function openDetails(contact) {
   }
 
 
-  document
-    .getElementById(
-      "detailsContent"
-    )
-    .innerHTML =
+  document.getElementById(
+    "detailsContent"
+  ).innerHTML =
     html;
 
 
-  document
-    .getElementById(
-      "detailsModal"
-    )
-    .style.display =
+  document.getElementById(
+    "detailsModal"
+  ).style.display =
     "flex";
 
 }
@@ -2112,7 +2190,9 @@ function editCurrentContact() {
 
 function openAddModal() {
 
-  if (!isAdmin) return;
+  if (!isAdmin) {
+    return;
+  }
 
 
   document.getElementById(
@@ -2132,20 +2212,24 @@ function openAddModal() {
   ).value =
     "";
 
+
   document.getElementById(
     "lastName"
   ).value =
     "";
+
 
   document.getElementById(
     "fatherName"
   ).value =
     "";
 
+
   document.getElementById(
     "birthday"
   ).value =
     "";
+
 
   document.getElementById(
     "note"
@@ -2158,10 +2242,12 @@ function openAddModal() {
   ).innerHTML =
     "";
 
+
   document.getElementById(
     "emails"
   ).innerHTML =
     "";
+
 
   document.getElementById(
     "addresses"
@@ -2175,11 +2261,25 @@ function openAddModal() {
     "";
 
 
-  document.getElementById(
-    "photoPreview"
-  ).classList.add(
+  const preview =
+    document.getElementById(
+      "photoPreview"
+    );
+
+
+  preview.src =
+    "";
+
+
+  preview.classList.add(
     "hidden"
   );
+
+
+  document.getElementById(
+    "photoStatus"
+  ).textContent =
+    "";
 
 
   addPhone();
@@ -2202,6 +2302,11 @@ function openAddModal() {
 ========================================================= */
 
 function openEditModal(contact) {
+
+  if (!isAdmin) {
+    return;
+  }
+
 
   document.getElementById(
     "formTitle"
@@ -2297,6 +2402,12 @@ function openEditModal(contact) {
     "";
 
 
+  document.getElementById(
+    "photoStatus"
+  ).textContent =
+    "";
+
+
   const preview =
     document.getElementById(
       "photoPreview"
@@ -2316,7 +2427,8 @@ function openEditModal(contact) {
 
   } else {
 
-    preview.src = "";
+    preview.src =
+      "";
 
     preview.classList.add(
       "hidden"
@@ -2329,6 +2441,238 @@ function openEditModal(contact) {
     "formModal"
   ).style.display =
     "flex";
+
+}
+
+
+/* =========================================================
+   IMPORT CONTACT FROM PHONE
+========================================================= */
+
+async function importPhoneContact() {
+
+  /*
+     Contact Picker API-ის არსებობის შემოწმება.
+  */
+
+  if (
+    !("contacts" in navigator) ||
+    !("ContactsManager" in window)
+  ) {
+
+    alert(
+      "ამ ბრაუზერში ტელეფონის კონტაქტებიდან პირდაპირი არჩევა არ არის მხარდაჭერილი.\n\n" +
+      "სცადე მხარდაჭერილი მობილური ბრაუზერი ან გამოიყენე კონტაქტის ხელით დამატება."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    /*
+       მხოლოდ საჭირო მონაცემებს ვითხოვთ.
+    */
+
+    const properties = [
+      "name",
+      "tel",
+      "email"
+    ];
+
+
+    const options = {
+      multiple: false
+    };
+
+
+    /*
+       ეს უნდა შესრულდეს მომხმარებლის ღილაკზე
+       დაჭერის შედეგად.
+    */
+
+    const selected =
+      await navigator.contacts.select(
+        properties,
+        options
+      );
+
+
+    if (
+      !selected ||
+      !selected.length
+    ) {
+
+      return;
+    }
+
+
+    const contact =
+      selected[0];
+
+
+    /* =========================
+       NAME
+    ========================= */
+
+    const names =
+      Array.isArray(contact.name)
+        ? contact.name
+        : [];
+
+
+    const fullName =
+      names
+        .join(" ")
+        .trim();
+
+
+    if (fullName) {
+
+      const nameParts =
+        fullName
+          .split(/\s+/)
+          .filter(Boolean);
+
+
+      document.getElementById(
+        "firstName"
+      ).value =
+        nameParts[0] || "";
+
+
+      document.getElementById(
+        "lastName"
+      ).value =
+        nameParts
+          .slice(1)
+          .join(" ") || "";
+
+    }
+
+
+    /* =========================
+       PHONES
+    ========================= */
+
+    const phones =
+      Array.isArray(contact.tel)
+        ? contact.tel
+            .filter(Boolean)
+            .map(
+              value =>
+                String(value).trim()
+            )
+            .filter(Boolean)
+        : [];
+
+
+    if (phones.length) {
+
+      const phonesContainer =
+        document.getElementById(
+          "phones"
+        );
+
+
+      phonesContainer.innerHTML =
+        "";
+
+
+      phones.forEach(
+        phone => {
+
+          addPhone(
+            phone
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================
+       EMAILS
+    ========================= */
+
+    const emails =
+      Array.isArray(contact.email)
+        ? contact.email
+            .filter(Boolean)
+            .map(
+              value =>
+                String(value).trim()
+            )
+            .filter(Boolean)
+        : [];
+
+
+    if (emails.length) {
+
+      const emailsContainer =
+        document.getElementById(
+          "emails"
+        );
+
+
+      emailsContainer.innerHTML =
+        "";
+
+
+      emails.forEach(
+        email => {
+
+          addEmail(
+            email
+          );
+
+        }
+      );
+
+    }
+
+
+    alert(
+      "📱 კონტაქტის მონაცემები გადმოტანილია.\n\n" +
+      "შეამოწმე ინფორმაცია და შემდეგ დააჭირე „💾 შენახვა“-ს."
+    );
+
+
+  } catch (error) {
+
+    /*
+       მომხმარებელმა Cancel დააჭირა.
+    */
+
+    if (
+      error &&
+      (
+        error.name === "AbortError" ||
+        error.name === "NotAllowedError"
+      )
+    ) {
+
+      return;
+    }
+
+
+    console.error(
+      "Contact Picker error:",
+      error
+    );
+
+
+    alert(
+      "ტელეფონის კონტაქტის მიღება ვერ მოხერხდა.\n\n" +
+      (
+        error?.message ||
+        "უცნობი შეცდომა"
+      )
+    );
+
+  }
 
 }
 
@@ -2355,12 +2699,14 @@ function addPhone(value = "") {
       class="phone-input"
       placeholder="ტელეფონის ნომერი"
       value="${escapeHtml(value)}"
+      inputmode="tel"
     >
 
     <button
       class="danger"
       type="button"
       onclick="this.parentElement.remove()"
+      aria-label="ტელეფონის წაშლა"
     >
       ×
     </button>
@@ -2368,11 +2714,11 @@ function addPhone(value = "") {
   `;
 
 
-  document
-    .getElementById(
-      "phones"
-    )
-    .appendChild(div);
+  document.getElementById(
+    "phones"
+  ).appendChild(
+    div
+  );
 
 }
 
@@ -2400,12 +2746,14 @@ function addEmail(value = "") {
       type="email"
       placeholder="ელფოსტა"
       value="${escapeHtml(value)}"
+      autocomplete="email"
     >
 
     <button
       class="danger"
       type="button"
       onclick="this.parentElement.remove()"
+      aria-label="ელფოსტის წაშლა"
     >
       ×
     </button>
@@ -2413,11 +2761,11 @@ function addEmail(value = "") {
   `;
 
 
-  document
-    .getElementById(
-      "emails"
-    )
-    .appendChild(div);
+  document.getElementById(
+    "emails"
+  ).appendChild(
+    div
+  );
 
 }
 
@@ -2452,6 +2800,7 @@ function addAddress(
       class="address-input"
       placeholder="საცხოვრებელი მისამართი"
       value="${escapeHtml(address)}"
+      autocomplete="street-address"
     >
 
 
@@ -2473,19 +2822,17 @@ function addAddress(
       type="button"
       onclick="this.parentElement.remove()"
     >
-
       საცხოვრებლის წაშლა
-
     </button>
 
   `;
 
 
-  document
-    .getElementById(
-      "addresses"
-    )
-    .appendChild(div);
+  document.getElementById(
+    "addresses"
+  ).appendChild(
+    div
+  );
 
 }
 
@@ -2500,7 +2847,17 @@ function previewPhoto(event) {
     event.target.files[0];
 
 
+  const status =
+    document.getElementById(
+      "photoStatus"
+    );
+
+
   if (!file) {
+
+    status.textContent =
+      "";
+
     return;
   }
 
@@ -2520,27 +2877,34 @@ function previewPhoto(event) {
       "";
 
 
+    status.textContent =
+      "";
+
     return;
   }
 
 
   /*
-     10 MB ზომის ლიმიტი.
+     საწყისი უსაფრთხოების ლიმიტი.
+     შემდეგ ფოტო მაინც შეკუმშდება.
   */
 
   if (
     file.size >
-    10 * 1024 * 1024
+    25 * 1024 * 1024
   ) {
 
     alert(
-      "ფოტოს ზომა არ უნდა აღემატებოდეს 10 MB-ს."
+      "ფოტო ძალიან დიდია. მაქსიმალური საწყისი ზომაა 25 MB."
     );
 
 
     event.target.value =
       "";
 
+
+    status.textContent =
+      "";
 
     return;
   }
@@ -2574,6 +2938,185 @@ function previewPhoto(event) {
     file
   );
 
+
+  status.textContent =
+    "📷 ფოტო არჩეულია. ატვირთვისას ავტომატურად ოპტიმიზირდება.";
+
+}
+
+
+/* =========================================================
+   IMAGE OPTIMIZATION
+========================================================= */
+
+function optimizeImage(
+  file,
+  maxWidth = 1600,
+  maxHeight = 1600,
+  quality = 0.82
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onerror =
+        () => reject(
+          new Error(
+            "ფოტოს წაკითხვა ვერ მოხერხდა."
+          )
+        );
+
+
+      reader.onload =
+        event => {
+
+          const img =
+            new Image();
+
+
+          img.onerror =
+            () => reject(
+              new Error(
+                "ფოტოს გახსნა ვერ მოხერხდა."
+              )
+            );
+
+
+          img.onload =
+            () => {
+
+              let width =
+                img.naturalWidth;
+
+
+              let height =
+                img.naturalHeight;
+
+
+              /*
+                 ზომის შემცირება
+              */
+
+              const ratio =
+                Math.min(
+                  1,
+                  maxWidth / width,
+                  maxHeight / height
+                );
+
+
+              width =
+                Math.round(
+                  width * ratio
+                );
+
+
+              height =
+                Math.round(
+                  height * ratio
+                );
+
+
+              const canvas =
+                document.createElement(
+                  "canvas"
+                );
+
+
+              canvas.width =
+                width;
+
+
+              canvas.height =
+                height;
+
+
+              const ctx =
+                canvas.getContext(
+                  "2d"
+                );
+
+
+              if (!ctx) {
+
+                reject(
+                  new Error(
+                    "Canvas არ არის მხარდაჭერილი."
+                  )
+                );
+
+                return;
+              }
+
+
+              ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+              );
+
+
+              /*
+                 WebP-ს ვცდით.
+                 თუ ბრაუზერი არ უჭერს მხარს,
+                 JPEG-ზე გადავდივართ.
+              */
+
+              canvas.toBlob(
+                blob => {
+
+                  if (!blob) {
+
+                    reject(
+                      new Error(
+                        "ფოტოს ოპტიმიზაცია ვერ მოხერხდა."
+                      )
+                    );
+
+                    return;
+                  }
+
+
+                  resolve(
+                    new File(
+                      [
+                        blob
+                      ],
+                      "contact-photo.webp",
+                      {
+                        type:
+                          "image/webp"
+                      }
+                    )
+                  );
+
+                },
+                "image/webp",
+                quality
+              );
+
+            };
+
+
+          img.src =
+            event.target.result;
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
+
 }
 
 
@@ -2593,524 +3136,622 @@ async function saveContact() {
   }
 
 
-  const id =
-    document
-      .getElementById(
-        "contactId"
-      )
-      .value;
-
-
-  const firstName =
-    document
-      .getElementById(
-        "firstName"
-      )
-      .value
-      .trim();
-
-
-  const lastName =
-    document
-      .getElementById(
-        "lastName"
-      )
-      .value
-      .trim();
-
-
-  const fatherName =
-    document
-      .getElementById(
-        "fatherName"
-      )
-      .value
-      .trim();
-
-
-  const birthday =
-    document
-      .getElementById(
-        "birthday"
-      )
-      .value ||
-    null;
-
-
-  const note =
-    document
-      .getElementById(
-        "note"
-      )
-      .value
-      .trim();
+  const saveButton =
+    document.getElementById(
+      "saveButton"
+    );
 
 
   if (
-    !firstName ||
-    !lastName
+    saveButton.disabled
   ) {
 
-    alert(
-      "სახელი და გვარი აუცილებელია."
-    );
-
     return;
   }
 
 
-  const payload = {
+  saveButton.disabled =
+    true;
 
-    first_name:
-      firstName,
 
-    last_name:
-      lastName,
+  saveButton.textContent =
+    "⏳ ინახება...";
 
-    father_name:
-      fatherName || null,
 
-    birthday:
-      birthday,
+  try {
 
-    note:
-      note || null
-
-  };
-
-
-  let contactId =
-    id;
-
-
-  /* CREATE / UPDATE */
-
-  if (id) {
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("contacts")
-        .update(payload)
-        .eq(
-          "id",
-          id
-        );
-
-
-    if (error) {
-
-      alert(
-        "კონტაქტის შეცდომა: " +
-        error.message
-      );
-
-      return;
-    }
-
-  } else {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("contacts")
-        .insert(payload)
-        .select()
-        .single();
-
-
-    if (error) {
-
-      alert(
-        "კონტაქტის შექმნის შეცდომა: " +
-        error.message
-      );
-
-      return;
-    }
-
-
-    contactId =
-      data.id;
-
-  }
-
-
-  /* PHONES */
-
-  const {
-    error: phoneDeleteError
-  } =
-    await supabaseClient
-      .from("contact_phones")
-      .delete()
-      .eq(
-        "contact_id",
-        contactId
-      );
-
-
-  if (phoneDeleteError) {
-
-    alert(
-      "ტელეფონების განახლების შეცდომა: " +
-      phoneDeleteError.message
-    );
-
-    return;
-  }
-
-
-  const phoneInputs =
-    [
-      ...document.querySelectorAll(
-        ".phone-input"
-      )
-    ];
-
-
-  const phones =
-    phoneInputs
-      .map(
-        input =>
-          input.value.trim()
-      )
-      .filter(Boolean)
-      .map(
-        phone => ({
-
-          contact_id:
-            contactId,
-
-          phone:
-            phone
-
-        })
-      );
-
-
-  if (phones.length) {
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("contact_phones")
-        .insert(phones);
-
-
-    if (error) {
-
-      alert(
-        "ტელეფონის შენახვის შეცდომა: " +
-        error.message
-      );
-
-      return;
-    }
-
-  }
-
-
-  /* EMAILS */
-
-  const {
-    error: emailDeleteError
-  } =
-    await supabaseClient
-      .from("contact_emails")
-      .delete()
-      .eq(
-        "contact_id",
-        contactId
-      );
-
-
-  if (emailDeleteError) {
-
-    alert(
-      "ელფოსტების განახლების შეცდომა: " +
-      emailDeleteError.message
-    );
-
-    return;
-  }
-
-
-  const emailInputs =
-    [
-      ...document.querySelectorAll(
-        ".email-input"
-      )
-    ];
-
-
-  const emails =
-    emailInputs
-      .map(
-        input =>
-          input.value.trim()
-      )
-      .filter(Boolean)
-      .map(
-        email => ({
-
-          contact_id:
-            contactId,
-
-          email:
-            email
-
-        })
-      );
-
-
-  if (emails.length) {
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("contact_emails")
-        .insert(emails);
-
-
-    if (error) {
-
-      alert(
-        "ელფოსტის შენახვის შეცდომა: " +
-        error.message
-      );
-
-      return;
-    }
-
-  }
-
-
-  /* ADDRESSES */
-
-  const {
-    error: addressDeleteError
-  } =
-    await supabaseClient
-      .from("contact_addresses")
-      .delete()
-      .eq(
-        "contact_id",
-        contactId
-      );
-
-
-  if (addressDeleteError) {
-
-    alert(
-      "მისამართების განახლების შეცდომა: " +
-      addressDeleteError.message
-    );
-
-    return;
-  }
-
-
-  const addressBlocks =
-    [
-      ...document.querySelectorAll(
-        "#addresses .item"
-      )
-    ];
-
-
-  const addresses =
-    addressBlocks
-      .map(
-        block => ({
-
-          address:
-            block
-              .querySelector(
-                ".address-input"
-              )
-              ?.value
-              .trim(),
-
-          map_url:
-            block
-              .querySelector(
-                ".map-input"
-              )
-              ?.value
-              .trim()
-
-        })
-      )
-      .filter(
-        item =>
-          item.address
-      )
-      .map(
-        item => ({
-
-          contact_id:
-            contactId,
-
-          address:
-            item.address,
-
-          map_url:
-            item.map_url ||
-            null
-
-        })
-      );
-
-
-  if (addresses.length) {
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from(
-          "contact_addresses"
+    const id =
+      document
+        .getElementById(
+          "contactId"
         )
-        .insert(addresses);
+        .value;
 
 
-    if (error) {
-
-      alert(
-        "მისამართის შენახვის შეცდომა: " +
-        error.message
-      );
-
-      return;
-    }
-
-  }
+    const firstName =
+      document
+        .getElementById(
+          "firstName"
+        )
+        .value
+        .trim();
 
 
-  /* PHOTO */
-
-  const photoFile =
-    document
-      .getElementById(
-        "photo"
-      )
-      .files[0];
-
-
-  if (photoFile) {
-
-    const extension =
-      photoFile.name
-        .split(".")
-        .pop()
-        .toLowerCase();
+    const lastName =
+      document
+        .getElementById(
+          "lastName"
+        )
+        .value
+        .trim();
 
 
-    const allowedExtensions = [
+    const fatherName =
+      document
+        .getElementById(
+          "fatherName"
+        )
+        .value
+        .trim();
 
-      "jpg",
-      "jpeg",
-      "png",
-      "webp",
-      "gif"
 
-    ];
+    const birthday =
+      document
+        .getElementById(
+          "birthday"
+        )
+        .value ||
+      null;
+
+
+    const note =
+      document
+        .getElementById(
+          "note"
+        )
+        .value
+        .trim();
 
 
     if (
-      !allowedExtensions
-        .includes(extension)
+      !firstName ||
+      !lastName
     ) {
 
       alert(
-        "დაშვებულია JPG, JPEG, PNG, WEBP ან GIF ფოტო."
+        "სახელი და გვარი აუცილებელია."
       );
 
       return;
     }
 
 
-    const path =
-      `${contactId}-${Date.now()}.${extension}`;
+    const payload = {
+
+      first_name:
+        firstName,
+
+      last_name:
+        lastName,
+
+      father_name:
+        fatherName || null,
+
+      birthday:
+        birthday,
+
+      note:
+        note || null
+
+    };
 
 
-    const {
-      error: uploadError
-    } =
-      await supabaseClient
-        .storage
-        .from(
-          "contact-photos"
-        )
-        .upload(
-          path,
-          photoFile,
-          {
-            cacheControl:
-              "3600",
+    let contactId =
+      id;
 
-            upsert:
-              false,
 
-            contentType:
-              photoFile.type
-          }
+    /* =========================
+       CREATE / UPDATE
+    ========================= */
+
+    if (id) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("contacts")
+          .update(payload)
+          .eq(
+            "id",
+            id
+          );
+
+
+      if (error) {
+
+        throw new Error(
+          "კონტაქტის შეცდომა: " +
+          error.message
         );
 
+      }
 
-    if (uploadError) {
+    } else {
 
-      alert(
-        "ფოტოს ატვირთვის შეცდომა: " +
-        uploadError.message
-      );
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("contacts")
+          .insert(payload)
+          .select()
+          .single();
 
-      return;
+
+      if (error) {
+
+        throw new Error(
+          "კონტაქტის შექმნის შეცდომა: " +
+          error.message
+        );
+
+      }
+
+
+      contactId =
+        data.id;
+
     }
 
 
+    /* =========================
+       PHONES
+    ========================= */
+
     const {
-      error: photoDbError
+      error: phoneDeleteError
     } =
       await supabaseClient
-        .from("contacts")
-        .update({
-
-          photo_url:
-            path
-
-        })
+        .from("contact_phones")
+        .delete()
         .eq(
-          "id",
+          "contact_id",
           contactId
         );
 
 
-    if (photoDbError) {
+    if (phoneDeleteError) {
 
-      alert(
-        "ფოტოს მონაცემების შენახვის შეცდომა: " +
-        photoDbError.message
+      throw new Error(
+        "ტელეფონების განახლების შეცდომა: " +
+        phoneDeleteError.message
       );
 
-      return;
     }
 
+
+    const phoneInputs =
+      [
+        ...document.querySelectorAll(
+          ".phone-input"
+        )
+      ];
+
+
+    const phones =
+      phoneInputs
+        .map(
+          input =>
+            input.value.trim()
+        )
+        .filter(Boolean)
+        .map(
+          phone => ({
+
+            contact_id:
+              contactId,
+
+            phone:
+              phone
+
+          })
+        );
+
+
+    if (phones.length) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("contact_phones")
+          .insert(phones);
+
+
+      if (error) {
+
+        throw new Error(
+          "ტელეფონის შენახვის შეცდომა: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       EMAILS
+    ========================= */
+
+    const {
+      error: emailDeleteError
+    } =
+      await supabaseClient
+        .from("contact_emails")
+        .delete()
+        .eq(
+          "contact_id",
+          contactId
+        );
+
+
+    if (emailDeleteError) {
+
+      throw new Error(
+        "ელფოსტების განახლების შეცდომა: " +
+        emailDeleteError.message
+      );
+
+    }
+
+
+    const emailInputs =
+      [
+        ...document.querySelectorAll(
+          ".email-input"
+        )
+      ];
+
+
+    const emails =
+      emailInputs
+        .map(
+          input =>
+            input.value.trim()
+        )
+        .filter(Boolean)
+        .map(
+          email => ({
+
+            contact_id:
+              contactId,
+
+            email:
+              email
+
+          })
+        );
+
+
+    if (emails.length) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("contact_emails")
+          .insert(emails);
+
+
+      if (error) {
+
+        throw new Error(
+          "ელფოსტის შენახვის შეცდომა: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       ADDRESSES
+    ========================= */
+
+    const {
+      error: addressDeleteError
+    } =
+      await supabaseClient
+        .from("contact_addresses")
+        .delete()
+        .eq(
+          "contact_id",
+          contactId
+        );
+
+
+    if (addressDeleteError) {
+
+      throw new Error(
+        "მისამართების განახლების შეცდომა: " +
+        addressDeleteError.message
+      );
+
+    }
+
+
+    const addressBlocks =
+      [
+        ...document.querySelectorAll(
+          "#addresses .item"
+        )
+      ];
+
+
+    const addresses =
+      addressBlocks
+        .map(
+          block => ({
+
+            address:
+              block
+                .querySelector(
+                  ".address-input"
+                )
+                ?.value
+                .trim(),
+
+            map_url:
+              block
+                .querySelector(
+                  ".map-input"
+                )
+                ?.value
+                .trim()
+
+          })
+        )
+        .filter(
+          item =>
+            item.address
+        )
+        .map(
+          item => ({
+
+            contact_id:
+              contactId,
+
+            address:
+              item.address,
+
+            map_url:
+              item.map_url ||
+              null
+
+          })
+        );
+
+
+    if (addresses.length) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from(
+            "contact_addresses"
+          )
+          .insert(addresses);
+
+
+      if (error) {
+
+        throw new Error(
+          "მისამართის შენახვის შეცდომა: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       PHOTO
+    ========================= */
+
+    const photoFile =
+      document
+        .getElementById(
+          "photo"
+        )
+        .files[0];
+
+
+    if (photoFile) {
+
+      const photoStatus =
+        document.getElementById(
+          "photoStatus"
+        );
+
+
+      photoStatus.textContent =
+        "🗜️ ფოტოს ოპტიმიზაცია მიმდინარეობს...";
+
+
+      const optimizedPhoto =
+        await optimizeImage(
+          photoFile,
+          1600,
+          1600,
+          0.82
+        );
+
+
+      photoStatus.textContent =
+        "☁️ ფოტო იტვირთება...";
+
+
+      /*
+         ძველი ფოტოს path-ის შენახვა.
+      */
+
+      let oldPhotoPath =
+        null;
+
+
+      if (id) {
+
+        const {
+          data: oldContact
+        } =
+          await supabaseClient
+            .from("contacts")
+            .select("photo_url")
+            .eq(
+              "id",
+              contactId
+            )
+            .maybeSingle();
+
+
+        oldPhotoPath =
+          oldContact?.photo_url ||
+          null;
+
+      }
+
+
+      /*
+         ყოველთვის WebP-ს ვინახავთ.
+      */
+
+      const path =
+        `${contactId}-${Date.now()}.webp`;
+
+
+      const {
+        error: uploadError
+      } =
+        await supabaseClient
+          .storage
+          .from(
+            "contact-photos"
+          )
+          .upload(
+            path,
+            optimizedPhoto,
+            {
+              cacheControl:
+                "3600",
+
+              upsert:
+                false,
+
+              contentType:
+                "image/webp"
+            }
+          );
+
+
+      if (uploadError) {
+
+        throw new Error(
+          "ფოტოს ატვირთვის შეცდომა: " +
+          uploadError.message
+        );
+
+      }
+
+
+      const {
+        error: photoDbError
+      } =
+        await supabaseClient
+          .from("contacts")
+          .update({
+
+            photo_url:
+              path
+
+          })
+          .eq(
+            "id",
+            contactId
+          );
+
+
+      if (photoDbError) {
+
+        throw new Error(
+          "ფოტოს მონაცემების შენახვის შეცდომა: " +
+          photoDbError.message
+        );
+
+      }
+
+
+      /*
+         ძველი ფოტოს წაშლა მხოლოდ მას შემდეგ,
+         რაც ახალი წარმატებით აიტვირთა.
+      */
+
+      if (
+        oldPhotoPath &&
+        oldPhotoPath !== path &&
+        !oldPhotoPath.startsWith("http")
+      ) {
+
+        await supabaseClient
+          .storage
+          .from(
+            "contact-photos"
+          )
+          .remove([
+            oldPhotoPath
+          ]);
+
+      }
+
+    }
+
+
+    closeModal(
+      "formModal"
+    );
+
+
+    await loadContacts();
+
+
+  } catch (error) {
+
+    console.error(
+      "saveContact error:",
+      error
+    );
+
+
+    alert(
+      error?.message ||
+      "კონტაქტის შენახვისას მოხდა შეცდომა."
+    );
+
+
+  } finally {
+
+    saveButton.disabled =
+      false;
+
+    saveButton.textContent =
+      "💾 შენახვა";
+
   }
-
-
-  closeModal(
-    "formModal"
-  );
-
-
-  await loadContacts();
 
 }
 
@@ -3125,6 +3766,7 @@ async function deleteCurrentContact() {
     !isAdmin ||
     !currentContact
   ) {
+
     return;
   }
 
@@ -3169,9 +3811,7 @@ async function deleteCurrentContact() {
 
   if (
     photoPath &&
-    !photoPath.startsWith(
-      "http"
-    )
+    !photoPath.startsWith("http")
   ) {
 
     await supabaseClient
@@ -3223,6 +3863,7 @@ function parseDateLocal(date) {
       Number.isNaN
     )
   ) {
+
     return null;
   }
 
@@ -3483,6 +4124,29 @@ function closeModal(id) {
   }
 
 }
+
+
+/* =========================================================
+   CLICK OUTSIDE MODAL
+========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target.classList.contains(
+        "modal-bg"
+      )
+    ) {
+
+      event.target.style.display =
+        "none";
+
+    }
+
+  }
+);
 
 
 /* =========================================================
