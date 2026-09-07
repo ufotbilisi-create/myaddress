@@ -61,7 +61,9 @@ textarea{min-height:80px;resize:vertical}.row{display:flex;gap:8px;margin-bottom
 <div class="logo">📕 საკონტაქტო წიგნი</div>
 <div class="header-actions">
 <button class="primary admin-only" onclick="openAddModal()">+ კონტაქტი</button>
+<button class="secondary admin-only" onclick="importMobileContacts()">📱 მობილურის კონტაქტები</button>
 <button class="secondary" onclick="logout()">გასვლა</button>
+<input id="vcfInput" type="file" accept=".vcf,text/vcard" class="hidden" onchange="importVCF(event)">
 </div>
 </div></header>
 
@@ -100,6 +102,8 @@ textarea{min-height:80px;resize:vertical}.row{display:flex;gap:8px;margin-bottom
 <div class="form-group">
 <label>ტელეფონები</label><div id="phones"></div>
 <button class="secondary" onclick="addPhone()">+ ტელეფონი</button>
+<button class="secondary" type="button" onclick="importMobileContacts()">📱 მობილურიდან შემოტანა</button>
+<div class="contact-import-help">მობილურზე აირჩიე ტელეფონის კონტაქტები. თუ ბრაუზერი პირდაპირ შემოტანას არ უჭერს მხარს, შეგეძლება .vcf ფაილის არჩევა.</div>
 </div>
 
 <div class="form-group">
@@ -391,6 +395,271 @@ async function useCurrentLocation(button){
    maximumAge:0
   }
  );
+}
+
+
+/* =========================================================
+   MOBILE CONTACTS IMPORT
+   - Android Chrome / compatible browsers: Contacts Picker API
+   - Fallback: import a .VCF / vCard file exported from the phone
+   - Imported contacts are saved into Supabase as normal contacts.
+========================================================= */
+async function importMobileContacts(){
+  if(!isAdmin){
+    alert("მხოლოდ ადმინისტრატორს შეუძლია კონტაქტების შემოტანა.");
+    return;
+  }
+
+  const pickerSupported =
+    "contacts" in navigator &&
+    typeof navigator.contacts?.select === "function";
+
+  if(pickerSupported){
+    try{
+      const props = ["name", "tel", "email"];
+      const opts = {multiple:true};
+
+      const selected = await navigator.contacts.select(props, opts);
+
+      if(!selected || !selected.length){
+        return;
+      }
+
+      await importSelectedMobileContacts(selected);
+      return;
+    }catch(error){
+      // If the user cancelled the picker, do not show an error.
+      if(error && error.name === "AbortError") return;
+
+      console.warn("Contacts Picker unavailable:", error);
+    }
+  }
+
+  alert(
+    "ამ ბრაუზერში მობილურის კონტაქტების პირდაპირი არჩევა მიუწვდომელია.\n\n" +
+    "ახლა გაიხსნება .VCF ფაილის არჩევა. ტელეფონის Contacts აპიდან კონტაქტები შეგიძლია vCard (.vcf) ფაილად გააზიარო/შეინახო."
+  );
+
+  document.getElementById("vcfInput").click();
+}
+
+async function importSelectedMobileContacts(selected){
+  const status = document.getElementById("status");
+  const buttonList = [...document.querySelectorAll('button')];
+
+  buttonList.forEach(btn=>btn.classList.add("importing"));
+  status.textContent = "📱 მობილურის კონტაქტები იტვირთება...";
+
+  let imported = 0;
+  let skipped = 0;
+  let failed = 0;
+
+  for(const person of selected){
+    const nameParts = normalizeContactName(person.name?.[0] || "");
+    const phones = uniqueValues(person.tel || []);
+    const emails = uniqueValues(person.email || []);
+
+    if(!nameParts.first && !phones.length && !emails.length){
+      skipped++;
+      continue;
+    }
+
+    // Avoid creating an obvious duplicate when the same phone already exists.
+    const alreadyExists = phones.some(phone =>
+      contacts.some(contact =>
+        (contact.contact_phones || []).some(item =>
+          normalizePhone(item.phone) === normalizePhone(phone)
+        )
+      )
+    );
+
+    if(alreadyExists){
+      skipped++;
+      continue;
+    }
+
+    const firstName = nameParts.first || "მობილურის კონტაქტი";
+    const lastName = nameParts.last || "";
+
+    // The current database requires first_name and last_name.
+    // For a contact without a surname, keep a neutral placeholder.
+    const payload = {
+      first_name: firstName,
+      last_name: lastName || "—",
+      father_name: null,
+      birthday: null,
+      note: "იმპორტირებულია მობილურის კონტაქტებიდან"
+    };
+
+    const {data, error} = await supabaseClient
+      .from("contacts")
+      .insert(payload)
+      .select()
+      .single();
+
+    if(error){
+      console.error(error);
+      failed++;
+      continue;
+    }
+
+    if(phones.length){
+      const rows = phones.map(phone => ({
+        contact_id:data.id,
+        phone
+      }));
+      const {error:phoneError} = await supabaseClient
+        .from("contact_phones")
+        .insert(rows);
+
+      if(phoneError){
+        console.error(phoneError);
+        failed++;
+        // Keep the contact itself; the phone insert can be retried by editing it.
+        continue;
+      }
+    }
+
+    if(emails.length){
+      const rows = emails.map(email => ({
+        contact_id:data.id,
+        email
+      }));
+      const {error:emailError} = await supabaseClient
+        .from("contact_emails")
+        .insert(rows);
+
+      if(emailError){
+        console.error(emailError);
+      }
+    }
+
+    imported++;
+  }
+
+  buttonList.forEach(btn=>btn.classList.remove("importing"));
+  await loadContacts();
+
+  alert(
+    `იმპორტი დასრულდა.\n\n` +
+    `დამატებულია: ${imported}\n` +
+    `გამოტოვებულია: ${skipped}\n` +
+    `შეცდომა: ${failed}`
+  );
+}
+
+function normalizeContactName(name){
+  const clean = String(name || "").trim().replace(/\\s+/g, " ");
+  if(!clean) return {first:"", last:""};
+
+  const parts = clean.split(" ");
+  return {
+    first: parts.shift() || "",
+    last: parts.join(" ")
+  };
+}
+
+function uniqueValues(values){
+  return [...new Set(
+    (values || [])
+      .map(value => String(value || "").trim())
+      .filter(Boolean)
+  )];
+}
+
+function normalizePhone(phone){
+  return String(phone || "").replace(/[^0-9+]/g, "");
+}
+
+/* =========================================================
+   VCF / VCARD IMPORT FALLBACK
+========================================================= */
+async function importVCF(event){
+  const file = event.target.files?.[0];
+  event.target.value = "";
+
+  if(!file) return;
+
+  if(!isAdmin){
+    alert("მხოლოდ ადმინისტრატორს შეუძლია კონტაქტების შემოტანა.");
+    return;
+  }
+
+  try{
+    const text = await file.text();
+    const cards = parseVCards(text);
+
+    if(!cards.length){
+      alert("VCF ფაილში კონტაქტები ვერ მოიძებნა.");
+      return;
+    }
+
+    await importSelectedMobileContacts(cards);
+  }catch(error){
+    console.error(error);
+    alert("VCF ფაილის წაკითხვა ვერ მოხერხდა.");
+  }
+}
+
+function parseVCards(text){
+  const normalized = String(text || "")
+    .replace(/\\r\\n/g, "\\n")
+    .replace(/\\r/g, "\\n")
+    .replace(/\\n[ \\t]/g, ""); // folded vCard lines
+
+  const blocks = normalized.split(/BEGIN:VCARD/i).slice(1);
+  const result = [];
+
+  for(const block of blocks){
+    const endIndex = block.search(/END:VCARD/i);
+    if(endIndex < 0) continue;
+
+    const body = block.slice(0, endIndex);
+    const lines = body.split("\\n");
+
+    let name = "";
+    const tels = [];
+    const emails = [];
+
+    for(let line of lines){
+      line = line.trim();
+      if(!line) continue;
+
+      const colon = line.indexOf(":");
+      if(colon < 0) continue;
+
+      const rawKey = line.slice(0, colon).toUpperCase();
+      const value = decodeVCardValue(line.slice(colon + 1));
+      const key = rawKey.split(";")[0];
+
+      if(key === "FN"){
+        name = value;
+      }else if(key === "TEL"){
+        if(value) tels.push(value);
+      }else if(key === "EMAIL"){
+        if(value) emails.push(value);
+      }
+    }
+
+    if(name || tels.length || emails.length){
+      result.push({
+        name:[name],
+        tel:uniqueValues(tels),
+        email:uniqueValues(emails)
+      });
+    }
+  }
+
+  return result;
+}
+
+function decodeVCardValue(value){
+  return String(value || "")
+    .replace(/\\\\n/g, "\\n")
+    .replace(/\\\\,/g, ",")
+    .replace(/\\\\;/g, ";")
+    .replace(/\\\\\\\\/g, "\\\\")
+    .trim();
 }
 
 async function saveContact(){
