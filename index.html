@@ -1,5 +1,5 @@
-```html
 <!DOCTYPE html>
+
 <html lang="ka">
 <head>
 <meta charset="UTF-8">
@@ -14,17 +14,155 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --header: #111827;
+  --shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+body.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #172033;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #334155;
+  --header: #020617;
+  --shadow: 0 8px 30px rgba(0,0,0,.30);
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .2s, color .2s;
 }
 
-header {
-  background: #111827;
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: .2s;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.primary {
+  background: var(--primary);
   color: white;
-  padding: 16px;
+}
+
+.primary:hover {
+  background: var(--primary-hover);
+}
+
+.danger {
+  background: var(--danger);
+  color: white;
+}
+
+.danger:hover {
+  background: var(--danger-hover);
+}
+
+.secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.secondary:hover {
+  background: var(--border);
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background:
+    radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 35%),
+    var(--bg);
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 430px;
+  background: var(--surface);
+  padding: 30px;
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.auth-logo {
+  text-align: center;
+  font-size: 54px;
+  margin-bottom: 5px;
+}
+
+.auth-box h1 {
+  text-align: center;
+  margin: 0 0 8px;
+  font-size: 25px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin: 0 0 25px;
+}
+
+.auth-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+#authMessage {
+  margin-top: 15px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+  background: var(--header);
+  color: white;
+  padding: 15px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 3px 15px rgba(0,0,0,.15);
 }
 
 .header-inner {
@@ -38,7 +176,7 @@ header {
 }
 
 .logo {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: bold;
 }
 
@@ -46,101 +184,205 @@ header {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-button {
-  border: 0;
-  border-radius: 8px;
-  padding: 10px 14px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.primary {
-  background: #2563eb;
+.theme-button {
+  background: rgba(255,255,255,.12);
   color: white;
+  border: 1px solid rgba(255,255,255,.15);
 }
 
-.danger {
-  background: #dc2626;
-  color: white;
-}
-
-.secondary {
-  background: #e5e7eb;
-  color: #111827;
-}
+/* =========================
+   SEARCH
+========================= */
 
 .search {
   max-width: 1200px;
-  margin: 20px auto;
+  margin: 22px auto 10px;
   padding: 0 16px;
+}
+
+.search-box {
+  position: relative;
 }
 
 .search input {
   width: 100%;
-  padding: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+  padding: 15px 48px 15px 17px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
   font-size: 16px;
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 3px 15px rgba(0,0,0,.04);
+  transition: .2s;
 }
+
+.search input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+
+.clear-search {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--border);
+  color: var(--text);
+  font-size: 20px;
+}
+
+.search-hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 8px;
+  padding-left: 4px;
+}
+
+/* =========================
+   CONTAINER
+========================= */
 
 .container {
   max-width: 1200px;
   margin: auto;
-  padding: 0 16px 40px;
+  padding: 0 16px 45px;
 }
+
+.status {
+  text-align: center;
+  margin: 16px 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* =========================
+   CARDS
+========================= */
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 18px;
 }
 
 .card {
-  background: white;
-  border-radius: 14px;
+  background: var(--surface);
+  border-radius: 17px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  box-shadow: var(--shadow);
   cursor: pointer;
-  transition: .2s;
+  transition: transform .2s, box-shadow .2s;
+  border: 1px solid var(--border);
 }
 
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 35px rgba(0,0,0,.13);
 }
 
-.card img {
+.card-photo {
+  position: relative;
   width: 100%;
   aspect-ratio: 1;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.card-photo img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  background: #e5e7eb;
+  display: block;
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 65px;
+  color: var(--muted);
 }
 
 .card-body {
-  padding: 12px;
+  padding: 14px 12px 15px;
   text-align: center;
 }
 
 .card-name {
   font-size: 17px;
   font-weight: bold;
+  line-height: 1.3;
 }
 
 .card-age {
-  margin-top: 5px;
-  color: #6b7280;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 14px;
 }
+
+.card-birthday {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+body.dark .card-birthday {
+  background: #422006;
+  color: #fde68a;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state {
+  text-align: center;
+  padding: 55px 20px;
+  color: var(--muted);
+}
+
+.empty-icon {
+  font-size: 55px;
+  margin-bottom: 10px;
+}
+
+.empty-state h3 {
+  color: var(--text);
+  margin: 5px 0;
+}
+
+/* =========================
+   MODALS
+========================= */
 
 .modal-bg {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.68);
   display: none;
   align-items: center;
   justify-content: center;
   padding: 15px;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .modal {
@@ -148,126 +390,187 @@ button {
   max-width: 700px;
   max-height: 92vh;
   overflow-y: auto;
-  background: white;
-  border-radius: 14px;
-  padding: 20px;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  border: 1px solid var(--border);
 }
 
 .modal h2 {
   margin-top: 0;
+  margin-bottom: 20px;
 }
 
+.modal h3 {
+  margin-top: 22px;
+  margin-bottom: 10px;
+}
+
+.modal hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+/* =========================
+   FORM
+========================= */
+
 .form-group {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
   font-weight: bold;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 input,
 textarea {
   width: 100%;
-  padding: 11px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 15px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.10);
 }
 
 textarea {
-  min-height: 80px;
+  min-height: 100px;
   resize: vertical;
 }
 
 .row {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
 }
 
-.row > * {
+.row > input {
   flex: 1;
 }
 
+.row > button {
+  flex: 0 0 auto;
+}
+
 .item {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  padding: 10px;
-  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 12px;
   margin-bottom: 10px;
 }
 
 .item-title {
   font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.details-photo {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
-  margin: 0 auto 15px;
-}
-
-.detail-line {
-  margin: 8px 0;
-}
-
-.detail-label {
-  font-weight: bold;
-}
-
-.address-map {
-  display: inline-block;
-  margin-top: 7px;
-  color: #2563eb;
-  text-decoration: none;
-}
-
-.auth-box {
-  width: 100%;
-  max-width: 420px;
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 5px 25px rgba(0,0,0,.12);
-}
-
-.auth-screen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.hidden {
-  display: none !important;
+  margin-bottom: 9px;
 }
 
 .actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
-.status {
-  text-align: center;
-  margin: 15px;
-  color: #6b7280;
+/* =========================
+   DETAILS
+========================= */
+
+.details-photo {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+  margin: 0 auto 20px;
+  border: 3px solid var(--border);
+  box-shadow: 0 8px 25px rgba(0,0,0,.15);
+}
+
+.detail-line {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-weight: bold;
+}
+
+.detail-value {
+  margin-left: 5px;
+}
+
+.detail-link {
+  color: var(--primary);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.detail-link:hover {
+  text-decoration: underline;
+}
+
+.address-map {
+  display: inline-block;
+  margin-top: 9px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.address-map:hover {
+  text-decoration: underline;
 }
 
 .birthday {
   background: #fef3c7;
-  border-radius: 8px;
-  padding: 8px;
-  margin-top: 8px;
+  color: #92400e;
+  border-radius: 12px;
+  padding: 11px 13px;
+  margin-top: 14px;
+  font-weight: bold;
 }
+
+body.dark .birthday {
+  background: #422006;
+  color: #fde68a;
+}
+
+/* =========================
+   PHOTO PREVIEW
+========================= */
+
+.preview {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-top: 10px;
+  border: 1px solid var(--border);
+}
+
+.photo-error {
+  text-align: center;
+  color: var(--muted);
+  padding: 25px;
+}
+
+/* =========================
+   ADMIN
+========================= */
 
 .admin-only {
   display: none;
@@ -277,41 +580,102 @@ body.is-admin .admin-only {
   display: inline-block;
 }
 
-.preview {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-top: 8px;
+.admin-badge {
+  display: none;
+  font-size: 12px;
+  color: #bfdbfe;
+  margin-right: 5px;
 }
 
-.photo-error {
-  text-align: center;
-  color: #6b7280;
-  padding: 20px;
-  font-size: 14px;
+body.is-admin .admin-badge {
+  display: inline-block;
 }
 
-@media(max-width:600px) {
+/* =========================
+   HIDDEN
+========================= */
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+  .header-inner {
+    align-items: stretch;
+  }
+
+  .logo {
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
 
   .cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
   .card-name {
-    font-size: 15px;
+    font-size: 14px;
+  }
+
+  .card-age {
+    font-size: 12px;
+  }
+
+  .card-body {
+    padding: 11px 7px 13px;
   }
 
   .modal {
-    padding: 15px;
+    padding: 17px;
+    border-radius: 17px;
+    max-height: 94vh;
   }
 
-  .row {
-    flex-direction: column;
+  .auth-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .actions button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .cards {
+    gap: 8px;
+  }
+
+  .card-name {
+    font-size: 13px;
+  }
+
+  .search {
+    padding: 0 10px;
+  }
+
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 </style>
+
 </head>
 
 <body>
@@ -324,44 +688,59 @@ body.is-admin .admin-only {
 
   <div class="auth-box">
 
-    <h1>📕 საკონტაქტო წიგნი</h1>
+```
+<div class="auth-logo">📕</div>
 
-    <div class="form-group">
-      <label>ელფოსტა</label>
-      <input
-        id="authEmail"
-        type="email"
-        placeholder="ელფოსტა"
-      >
-    </div>
+<h1>საკონტაქტო წიგნი</h1>
 
-    <div class="form-group">
-      <label>პაროლი</label>
-      <input
-        id="authPassword"
-        type="password"
-        placeholder="პაროლი"
-      >
-    </div>
+<p class="auth-subtitle">
+  პირადი და საერთო კონტაქტების წიგნი
+</p>
 
-    <div class="actions">
+<div class="form-group">
+  <label>ელფოსტა</label>
+  <input
+    id="authEmail"
+    type="email"
+    placeholder="შეიყვანე ელფოსტა"
+    autocomplete="email"
+  >
+</div>
 
-      <button class="primary" onclick="login()">
-        შესვლა
-      </button>
+<div class="form-group">
+  <label>პაროლი</label>
+  <input
+    id="authPassword"
+    type="password"
+    placeholder="შეიყვანე პაროლი"
+    autocomplete="current-password"
+  >
+</div>
 
-      <button class="secondary" onclick="register()">
-        რეგისტრაცია
-      </button>
+<div class="auth-actions">
 
-    </div>
+  <button
+    class="primary"
+    onclick="login()"
+  >
+    შესვლა
+  </button>
 
-    <p id="authMessage"></p>
+  <button
+    class="secondary"
+    onclick="register()"
+  >
+    რეგისტრაცია
+  </button>
+
+</div>
+
+<p id="authMessage"></p>
+```
 
   </div>
 
 </div>
-
 
 <!-- =========================
      APP
@@ -373,44 +752,77 @@ body.is-admin .admin-only {
 
   <div class="header-inner">
 
-    <div class="logo">
-      📕 საკონტაქტო წიგნი
-    </div>
+```
+<div class="logo">
+  📕 საკონტაქტო წიგნი
+</div>
 
-    <div class="header-actions">
+<div class="header-actions">
 
-      <button
-        class="primary admin-only"
-        onclick="openAddModal()"
-      >
-        + კონტაქტი
-      </button>
+  <span class="admin-badge">
+    👑 Admin
+  </span>
 
-      <button
-        class="secondary"
-        onclick="logout()"
-      >
-        გასვლა
-      </button>
+  <button
+    class="primary admin-only"
+    onclick="openAddModal()"
+  >
+    + კონტაქტი
+  </button>
 
-    </div>
+  <button
+    id="themeButton"
+    class="theme-button"
+    onclick="toggleTheme()"
+  >
+    🌙
+  </button>
+
+  <button
+    class="secondary"
+    onclick="logout()"
+  >
+    გასვლა
+  </button>
+
+</div>
+```
 
   </div>
 
 </header>
 
-
 <div class="search">
 
-  <input
-    id="searchInput"
-    type="search"
-    placeholder="🔎 მოძებნე სახელი, გვარი, ტელეფონი, მისამართი..."
-    oninput="renderContacts()"
-  >
+  <div class="search-box">
+
+```
+<input
+  id="searchInput"
+  type="search"
+  placeholder="🔎 მოძებნე სახელი, გვარი, ტელეფონი, ელფოსტა..."
+  oninput="renderContacts()"
+  autocomplete="off"
+>
+
+<button
+  id="clearSearch"
+  class="clear-search"
+  onclick="clearSearch()"
+  aria-label="ძებნის გასუფთავება"
+>
+  ×
+</button>
+```
+
+  </div>
+
+  <div class="search-hint">
+    ძებნა მუშაობს სახელზე, გვარზე, მამის სახელზე, ტელეფონზე,
+    ელფოსტაზე, მისამართზე და შენიშვნაზე.
+  </div>
 
 </div>
-
 
 <div class="container">
 
@@ -424,7 +836,6 @@ body.is-admin .admin-only {
 
 </div>
 
-
 <!-- =========================
      DETAILS MODAL
 ========================= -->
@@ -433,41 +844,42 @@ body.is-admin .admin-only {
 
   <div class="modal">
 
-    <h2>კონტაქტის ინფორმაცია</h2>
+```
+<h2>კონტაქტის ინფორმაცია</h2>
 
-    <div id="detailsContent"></div>
+<div id="detailsContent"></div>
 
-    <div class="actions">
+<div class="actions">
 
-      <button
-        class="secondary"
-        onclick="closeModal('detailsModal')"
-      >
-        დახურვა
-      </button>
+  <button
+    class="secondary"
+    onclick="closeModal('detailsModal')"
+  >
+    დახურვა
+  </button>
 
-      <button
-        id="editButton"
-        class="primary admin-only"
-        onclick="editCurrentContact()"
-      >
-        რედაქტირება
-      </button>
+  <button
+    id="editButton"
+    class="primary admin-only"
+    onclick="editCurrentContact()"
+  >
+    ✏️ რედაქტირება
+  </button>
 
-      <button
-        id="deleteButton"
-        class="danger admin-only"
-        onclick="deleteCurrentContact()"
-      >
-        წაშლა
-      </button>
+  <button
+    id="deleteButton"
+    class="danger admin-only"
+    onclick="deleteCurrentContact()"
+  >
+    🗑️ წაშლა
+  </button>
 
-    </div>
+</div>
+```
 
   </div>
 
 </div>
-
 
 <!-- =========================
      CONTACT FORM
@@ -477,162 +889,175 @@ body.is-admin .admin-only {
 
   <div class="modal">
 
-    <h2 id="formTitle">
-      ახალი კონტაქტი
-    </h2>
+```
+<h2 id="formTitle">
+  ახალი კონტაქტი
+</h2>
 
-    <input
-      type="hidden"
-      id="contactId"
-    >
+<input
+  type="hidden"
+  id="contactId"
+>
 
-    <div class="form-group">
+<div class="form-group">
 
-      <label>სახელი *</label>
+  <label>სახელი *</label>
 
-      <input id="firstName">
+  <input
+    id="firstName"
+    placeholder="სახელი"
+  >
 
-    </div>
-
-
-    <div class="form-group">
-
-      <label>გვარი *</label>
-
-      <input id="lastName">
-
-    </div>
+</div>
 
 
-    <div class="form-group">
+<div class="form-group">
 
-      <label>მამის სახელი</label>
+  <label>გვარი *</label>
 
-      <input id="fatherName">
+  <input
+    id="lastName"
+    placeholder="გვარი"
+  >
 
-    </div>
-
-
-    <div class="form-group">
-
-      <label>დაბადების თარიღი</label>
-
-      <input
-        id="birthday"
-        type="date"
-      >
-
-    </div>
+</div>
 
 
-    <!-- PHONES -->
+<div class="form-group">
 
-    <div class="form-group">
+  <label>მამის სახელი</label>
 
-      <label>ტელეფონები</label>
+  <input
+    id="fatherName"
+    placeholder="მამის სახელი"
+  >
 
-      <div id="phones"></div>
-
-      <button
-        class="secondary"
-        onclick="addPhone()"
-      >
-        + ტელეფონი
-      </button>
-
-    </div>
+</div>
 
 
-    <!-- EMAILS -->
+<div class="form-group">
 
-    <div class="form-group">
+  <label>დაბადების თარიღი</label>
 
-      <label>ელფოსტები</label>
+  <input
+    id="birthday"
+    type="date"
+  >
 
-      <div id="emails"></div>
-
-      <button
-        class="secondary"
-        onclick="addEmail()"
-      >
-        + ელფოსტა
-      </button>
-
-    </div>
+</div>
 
 
-    <!-- ADDRESSES -->
+<!-- PHONES -->
 
-    <div class="form-group">
+<div class="form-group">
 
-      <label>საცხოვრებელი მისამართები</label>
+  <label>📞 ტელეფონები</label>
 
-      <div id="addresses"></div>
+  <div id="phones"></div>
 
-      <button
-        class="secondary"
-        onclick="addAddress()"
-      >
-        + საცხოვრებელი
-      </button>
+  <button
+    class="secondary"
+    onclick="addPhone()"
+  >
+    + ტელეფონი
+  </button>
 
-    </div>
-
-
-    <!-- PHOTO -->
-
-    <div class="form-group">
-
-      <label>ფოტო</label>
-
-      <input
-        id="photo"
-        type="file"
-        accept="image/*"
-        onchange="previewPhoto(event)"
-      >
-
-      <img
-        id="photoPreview"
-        class="preview hidden"
-      >
-
-    </div>
+</div>
 
 
-    <!-- NOTE -->
+<!-- EMAILS -->
 
-    <div class="form-group">
+<div class="form-group">
 
-      <label>შენიშვნა</label>
+  <label>✉️ ელფოსტები</label>
 
-      <textarea id="note"></textarea>
+  <div id="emails"></div>
 
-    </div>
+  <button
+    class="secondary"
+    onclick="addEmail()"
+  >
+    + ელფოსტა
+  </button>
+
+</div>
 
 
-    <div class="actions">
+<!-- ADDRESSES -->
 
-      <button
-        class="primary"
-        onclick="saveContact()"
-      >
-        შენახვა
-      </button>
+<div class="form-group">
 
-      <button
-        class="secondary"
-        onclick="closeModal('formModal')"
-      >
-        გაუქმება
-      </button>
+  <label>🏠 საცხოვრებელი მისამართები</label>
 
-    </div>
+  <div id="addresses"></div>
+
+  <button
+    class="secondary"
+    onclick="addAddress()"
+  >
+    + საცხოვრებელი
+  </button>
+
+</div>
+
+
+<!-- PHOTO -->
+
+<div class="form-group">
+
+  <label>📷 ფოტო</label>
+
+  <input
+    id="photo"
+    type="file"
+    accept="image/*"
+    onchange="previewPhoto(event)"
+  >
+
+  <img
+    id="photoPreview"
+    class="preview hidden"
+  >
+
+</div>
+
+
+<!-- NOTE -->
+
+<div class="form-group">
+
+  <label>📝 შენიშვნა</label>
+
+  <textarea
+    id="note"
+    placeholder="დამატებითი ინფორმაცია..."
+  ></textarea>
+
+</div>
+
+
+<div class="actions">
+
+  <button
+    class="primary"
+    onclick="saveContact()"
+  >
+    💾 შენახვა
+  </button>
+
+  <button
+    class="secondary"
+    onclick="closeModal('formModal')"
+  >
+    გაუქმება
+  </button>
+
+</div>
+```
 
   </div>
 
 </div>
-
 
 <script>
 
@@ -659,6 +1084,125 @@ let isAdmin = false;
 
 
 /* =========================================================
+   SMART SEARCH HELPERS
+========================================================= */
+
+function normalizeSearch(value) {
+
+  return String(value ?? "")
+    .toLocaleLowerCase("ka-GE")
+    .normalize("NFKC")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+
+function normalizePhone(value) {
+
+  return String(value ?? "")
+    .replace(/\D/g, "");
+
+}
+
+
+function getContactSearchText(contact) {
+
+  const normalText = [
+
+    contact.first_name,
+    contact.last_name,
+    contact.father_name,
+    contact.birthday,
+    contact.note,
+
+    ...(contact.contact_phones || [])
+      .map(x => x.phone),
+
+    ...(contact.contact_emails || [])
+      .map(x => x.email),
+
+    ...(contact.contact_addresses || [])
+      .map(x => x.address),
+
+    ...(contact.contact_addresses || [])
+      .map(x => x.map_url)
+
+  ].join(" ");
+
+
+  const phoneText = [
+
+    ...(contact.contact_phones || [])
+      .map(x => normalizePhone(x.phone))
+
+  ].join(" ");
+
+
+  return {
+    text: normalizeSearch(normalText),
+    phone: phoneText
+  };
+
+}
+
+
+function contactMatches(contact, query) {
+
+  const q =
+    normalizeSearch(query);
+
+
+  if (!q) {
+    return true;
+  }
+
+
+  const searchData =
+    getContactSearchText(contact);
+
+
+  /*
+     ჩვეულებრივი ნაწილობრივი ძებნა.
+     მაგალითად:
+     დათო → დათო
+     ბერ → ბერიძე
+  */
+
+  if (searchData.text.includes(q)) {
+    return true;
+  }
+
+
+  /*
+     ტელეფონის სპეციალური ძებნა.
+
+     მაგალითად:
+     "599 12"
+     ან
+     "59912"
+
+     ორივე მოძებნის ერთსა და იმავე ნომერს.
+  */
+
+  const phoneQuery =
+    normalizePhone(q);
+
+
+  if (
+    phoneQuery.length >= 3 &&
+    searchData.phone.includes(phoneQuery)
+  ) {
+    return true;
+  }
+
+
+  return false;
+
+}
+
+
+/* =========================================================
    AUTH
 ========================================================= */
 
@@ -675,14 +1219,18 @@ async function login() {
       .getElementById("authPassword")
       .value;
 
+
   if (!email || !password) {
 
-    document.getElementById("authMessage")
-      .textContent =
-      "შეავსე ელფოსტა და პაროლი.";
+    setAuthMessage(
+      "შეავსე ელფოსტა და პაროლი."
+    );
 
     return;
   }
+
+
+  setAuthMessage("მიმდინარეობს შესვლა...");
 
 
   const { error } =
@@ -696,9 +1244,9 @@ async function login() {
 
   if (error) {
 
-    document.getElementById("authMessage")
-      .textContent =
-      error.message;
+    setAuthMessage(
+      error.message
+    );
 
     return;
   }
@@ -724,9 +1272,9 @@ async function register() {
 
   if (!email || !password) {
 
-    document.getElementById("authMessage")
-      .textContent =
-      "შეავსე ელფოსტა და პაროლი.";
+    setAuthMessage(
+      "შეავსე ელფოსტა და პაროლი."
+    );
 
     return;
   }
@@ -734,12 +1282,17 @@ async function register() {
 
   if (password.length < 6) {
 
-    document.getElementById("authMessage")
-      .textContent =
-      "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს.";
+    setAuthMessage(
+      "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს."
+    );
 
     return;
   }
+
+
+  setAuthMessage(
+    "რეგისტრაცია მიმდინარეობს..."
+  );
 
 
   const { error } =
@@ -753,25 +1306,40 @@ async function register() {
 
   if (error) {
 
-    document.getElementById("authMessage")
-      .textContent =
-      error.message;
+    setAuthMessage(
+      error.message
+    );
 
     return;
   }
 
 
-  document.getElementById("authMessage")
-    .textContent =
-    "რეგისტრაცია დასრულდა. თუ ელფოსტის დადასტურება ჩართულია, შეამოწმე ელფოსტა.";
+  setAuthMessage(
+    "რეგისტრაცია დასრულდა. თუ ელფოსტის დადასტურება ჩართულია, შეამოწმე ელფოსტა."
+  );
+
 }
 
+
+function setAuthMessage(message) {
+
+  document.getElementById("authMessage")
+    .textContent =
+    message;
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 async function logout() {
 
   await supabaseClient.auth.signOut();
 
   location.reload();
+
 }
 
 
@@ -816,6 +1384,7 @@ async function initializeApp() {
   await checkAdmin();
 
   await loadContacts();
+
 }
 
 
@@ -862,6 +1431,7 @@ async function checkAdmin() {
     "is-admin",
     isAdmin
   );
+
 }
 
 
@@ -908,50 +1478,53 @@ async function loadContacts() {
      PRIVATE STORAGE
 
      photo_url-ში ვინახავთ მხოლოდ Storage path-ს.
-     მაგალითად:
-
-     123-1757261234567.jpg
   */
 
-  for (const contact of contacts) {
+  await Promise.all(
 
-    contact.photo_signed_url = null;
+    contacts.map(
+      async contact => {
 
-
-    if (!contact.photo_url) {
-      continue;
-    }
-
-
-    /*
-       ახალი სისტემის ფოტო:
-       photo_url არის Storage path.
-    */
-
-    const {
-      data: signedData,
-      error: signedError
-    } =
-      await supabaseClient
-        .storage
-        .from("contact-photos")
-        .createSignedUrl(
-          contact.photo_url,
-          3600
-        );
+        contact.photo_signed_url =
+          null;
 
 
-    if (!signedError && signedData) {
+        if (!contact.photo_url) {
+          return;
+        }
 
-      contact.photo_signed_url =
-        signedData.signedUrl;
 
-    }
+        const {
+          data: signedData,
+          error: signedError
+        } =
+          await supabaseClient
+            .storage
+            .from("contact-photos")
+            .createSignedUrl(
+              contact.photo_url,
+              3600
+            );
 
-  }
+
+        if (
+          !signedError &&
+          signedData
+        ) {
+
+          contact.photo_signed_url =
+            signedData.signedUrl;
+
+        }
+
+      }
+    )
+
+  );
 
 
   renderContacts();
+
 }
 
 
@@ -961,43 +1534,31 @@ async function loadContacts() {
 
 function renderContacts() {
 
+  const input =
+    document.getElementById("searchInput");
+
   const query =
-    document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
+    input.value;
+
+
+  const clearButton =
+    document.getElementById("clearSearch");
+
+
+  clearButton.style.display =
+    query.trim()
+      ? "flex"
+      : "none";
 
 
   const filtered =
-    contacts.filter(contact => {
-
-      const text = [
-
-        contact.first_name,
-        contact.last_name,
-        contact.father_name,
-        contact.birthday,
-
-        ...(contact.contact_phones || [])
-          .map(x => x.phone),
-
-        ...(contact.contact_emails || [])
-          .map(x => x.email),
-
-        ...(contact.contact_addresses || [])
-          .map(x => x.address),
-
-        contact.note
-
-      ]
-      .join(" ")
-      .toLowerCase();
-
-
-      return text.includes(query);
-
-    });
+    contacts.filter(
+      contact =>
+        contactMatches(
+          contact,
+          query
+        )
+    );
 
 
   const cards =
@@ -1011,7 +1572,31 @@ function renderContacts() {
 
     document.getElementById("status")
       .textContent =
-      "კონტაქტები ვერ მოიძებნა.";
+      query.trim()
+        ? "ძიების შედეგი: 0 კონტაქტი"
+        : "კონტაქტები ვერ მოიძებნა.";
+
+
+    cards.innerHTML = `
+
+      <div class="empty-state"
+           style="grid-column:1/-1;">
+
+        <div class="empty-icon">
+          🔎
+        </div>
+
+        <h3>
+          კონტაქტი ვერ მოიძებნა
+        </h3>
+
+        <p>
+          სცადე სხვა სახელი, გვარი, ტელეფონი ან მისამართი.
+        </p>
+
+      </div>
+
+    `;
 
     return;
   }
@@ -1019,57 +1604,122 @@ function renderContacts() {
 
   document.getElementById("status")
     .textContent =
-    `${filtered.length} კონტაქტი`;
+    query.trim()
+      ? `ნაპოვნია ${filtered.length} კონტაქტი`
+      : `${filtered.length} კონტაქტი`;
 
 
-  filtered.forEach(contact => {
+  filtered.forEach(
+    contact => {
 
-    const card =
-      document.createElement("div");
+      const card =
+        document.createElement("div");
 
-    card.className = "card";
-
-
-    card.onclick = () =>
-      openDetails(contact);
+      card.className =
+        "card";
 
 
-    const image =
-      contact.photo_signed_url ||
-      "https://via.placeholder.com/500?text=Photo";
+      card.onclick = () =>
+        openDetails(contact);
 
 
-    card.innerHTML = `
+      const image =
+        contact.photo_signed_url;
 
-      <img
-        src="${escapeHtml(image)}"
-        alt="ფოტო"
-        onerror="this.src='https://via.placeholder.com/500?text=Photo'"
-      >
 
-      <div class="card-body">
+      const birthdaySoon =
+        isUpcomingBirthday(
+          contact.birthday
+        );
 
-        <div class="card-name">
 
-          ${escapeHtml(contact.first_name || "")}
-          ${escapeHtml(contact.last_name || "")}
+      const photoHtml =
+        image
+          ? `
+            <img
+              src="${escapeHtml(image)}"
+              alt="ფოტო"
+              onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>👤</div>'"
+            >
+          `
+          : `
+            <div class="photo-placeholder">
+              👤
+            </div>
+          `;
+
+
+      card.innerHTML = `
+
+        <div class="card-photo">
+
+          ${photoHtml}
 
         </div>
 
-        <div class="card-age">
+        <div class="card-body">
 
-          ${calculateAge(contact.birthday)}
+          <div class="card-name">
+
+            ${escapeHtml(
+              contact.first_name || ""
+            )}
+
+            ${escapeHtml(
+              contact.last_name || ""
+            )}
+
+          </div>
+
+          <div class="card-age">
+
+            ${calculateAge(
+              contact.birthday
+            )}
+
+          </div>
+
+          ${
+            birthdaySoon
+              ? `
+                <div class="card-birthday">
+                  🎂 მალე დაბადების დღე
+                </div>
+              `
+              : ""
+          }
 
         </div>
 
-      </div>
-
-    `;
+      `;
 
 
-    cards.appendChild(card);
+      cards.appendChild(card);
 
-  });
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CLEAR SEARCH
+========================================================= */
+
+function clearSearch() {
+
+  const input =
+    document.getElementById(
+      "searchInput"
+    );
+
+
+  input.value = "";
+
+  input.focus();
+
+  renderContacts();
+
 }
 
 
@@ -1079,7 +1729,8 @@ function renderContacts() {
 
 function openDetails(contact) {
 
-  currentContact = contact;
+  currentContact =
+    contact;
 
 
   const phones =
@@ -1101,9 +1752,30 @@ function openDetails(contact) {
 
       <img
         class="details-photo"
-        src="${escapeHtml(contact.photo_signed_url)}"
+        src="${escapeHtml(
+          contact.photo_signed_url
+        )}"
         alt="ფოტო"
       >
+
+    `;
+
+  } else {
+
+    html += `
+
+      <div class="details-photo"
+           style="
+             display:flex;
+             align-items:center;
+             justify-content:center;
+             font-size:65px;
+             background:var(--surface-2);
+           ">
+
+        👤
+
+      </div>
 
     `;
 
@@ -1118,7 +1790,11 @@ function openDetails(contact) {
         სახელი:
       </span>
 
-      ${escapeHtml(contact.first_name || "")}
+      <span class="detail-value">
+        ${escapeHtml(
+          contact.first_name || ""
+        )}
+      </span>
 
     </div>
 
@@ -1129,7 +1805,11 @@ function openDetails(contact) {
         გვარი:
       </span>
 
-      ${escapeHtml(contact.last_name || "")}
+      <span class="detail-value">
+        ${escapeHtml(
+          contact.last_name || ""
+        )}
+      </span>
 
     </div>
 
@@ -1140,7 +1820,11 @@ function openDetails(contact) {
         მამის სახელი:
       </span>
 
-      ${escapeHtml(contact.father_name || "—")}
+      <span class="detail-value">
+        ${escapeHtml(
+          contact.father_name || "—"
+        )}
+      </span>
 
     </div>
 
@@ -1151,7 +1835,11 @@ function openDetails(contact) {
         დაბადება:
       </span>
 
-      ${formatDate(contact.birthday)}
+      <span class="detail-value">
+        ${formatDate(
+          contact.birthday
+        )}
+      </span>
 
     </div>
 
@@ -1162,14 +1850,22 @@ function openDetails(contact) {
         ასაკი:
       </span>
 
-      ${calculateAge(contact.birthday)}
+      <span class="detail-value">
+        ${calculateAge(
+          contact.birthday
+        )}
+      </span>
 
     </div>
 
   `;
 
 
-  if (isUpcomingBirthday(contact.birthday)) {
+  if (
+    isUpcomingBirthday(
+      contact.birthday
+    )
+  ) {
 
     html += `
 
@@ -1195,30 +1891,39 @@ function openDetails(contact) {
   if (!phones.length) {
 
     html += `
-      <p>არ არის მითითებული</p>
+      <p style="color:var(--muted);">
+        არ არის მითითებული
+      </p>
     `;
 
   } else {
 
-    phones.forEach(phone => {
+    phones.forEach(
+      phone => {
 
-      html += `
+        html += `
 
-        <div class="item">
+          <div class="item">
 
-          📞
+            📞
 
-          <a
-            href="tel:${escapeHtml(phone.phone)}"
-          >
-            ${escapeHtml(phone.phone)}
-          </a>
+            <a
+              class="detail-link"
+              href="tel:${escapeHtml(
+                phone.phone
+              )}"
+            >
+              ${escapeHtml(
+                phone.phone
+              )}
+            </a>
 
-        </div>
+          </div>
 
-      `;
+        `;
 
-    });
+      }
+    );
 
   }
 
@@ -1233,30 +1938,39 @@ function openDetails(contact) {
   if (!emails.length) {
 
     html += `
-      <p>არ არის მითითებული</p>
+      <p style="color:var(--muted);">
+        არ არის მითითებული
+      </p>
     `;
 
   } else {
 
-    emails.forEach(email => {
+    emails.forEach(
+      email => {
 
-      html += `
+        html += `
 
-        <div class="item">
+          <div class="item">
 
-          ✉️
+            ✉️
 
-          <a
-            href="mailto:${escapeHtml(email.email)}"
-          >
-            ${escapeHtml(email.email)}
-          </a>
+            <a
+              class="detail-link"
+              href="mailto:${escapeHtml(
+                email.email
+              )}"
+            >
+              ${escapeHtml(
+                email.email
+              )}
+            </a>
 
-        </div>
+          </div>
 
-      `;
+        `;
 
-    });
+      }
+    );
 
   }
 
@@ -1271,52 +1985,62 @@ function openDetails(contact) {
   if (!addresses.length) {
 
     html += `
-      <p>არ არის მითითებული</p>
+      <p style="color:var(--muted);">
+        არ არის მითითებული
+      </p>
     `;
 
   } else {
 
-    addresses.forEach((address, index) => {
+    addresses.forEach(
+      (address, index) => {
 
-      const mapUrl =
-        address.map_url ||
-        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address.address)}`;
+        const mapUrl =
+          address.map_url ||
+          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            address.address
+          )}`;
 
 
-      html += `
+        html += `
 
-        <div class="item">
+          <div class="item">
 
-          <div class="item-title">
+            <div class="item-title">
 
-            საცხოვრებელი ${index + 1}
+              საცხოვრებელი ${index + 1}
+
+            </div>
+
+
+            <div>
+
+              ${escapeHtml(
+                address.address || ""
+              )}
+
+            </div>
+
+
+            <a
+              class="address-map"
+              href="${escapeHtml(
+                mapUrl
+              )}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+
+              🗺️ ამ მისამართის რუკაზე გახსნა
+
+            </a>
 
           </div>
 
+        `;
 
-          <div>
-
-            ${escapeHtml(address.address || "")}
-
-          </div>
-
-
-          <a
-            class="address-map"
-            href="${escapeHtml(mapUrl)}"
-            target="_blank"
-            rel="noopener"
-          >
-
-            🗺️ ამ მისამართის რუკაზე გახსნა
-
-          </a>
-
-        </div>
-
-      `;
-
-    });
+      }
+    );
 
   }
 
@@ -1331,7 +2055,9 @@ function openDetails(contact) {
 
       <div class="item">
 
-        ${escapeHtml(contact.note)}
+        ${escapeHtml(
+          contact.note
+        )}
 
       </div>
 
@@ -1340,27 +2066,43 @@ function openDetails(contact) {
   }
 
 
-  document.getElementById("detailsContent")
+  document
+    .getElementById(
+      "detailsContent"
+    )
     .innerHTML =
     html;
 
 
-  document.getElementById("detailsModal")
+  document
+    .getElementById(
+      "detailsModal"
+    )
     .style.display =
     "flex";
+
 }
 
 
 function editCurrentContact() {
 
-  if (!isAdmin || !currentContact) {
+  if (
+    !isAdmin ||
+    !currentContact
+  ) {
     return;
   }
 
 
-  closeModal("detailsModal");
+  closeModal(
+    "detailsModal"
+  );
 
-  openEditModal(currentContact);
+
+  openEditModal(
+    currentContact
+  );
+
 }
 
 
@@ -1373,67 +2115,85 @@ function openAddModal() {
   if (!isAdmin) return;
 
 
-  document.getElementById("formTitle")
-    .textContent =
+  document.getElementById(
+    "formTitle"
+  ).textContent =
     "ახალი კონტაქტი";
 
 
-  document.getElementById("contactId")
-    .value =
+  document.getElementById(
+    "contactId"
+  ).value =
     "";
 
 
-  document.getElementById("firstName")
-    .value =
+  document.getElementById(
+    "firstName"
+  ).value =
     "";
 
-  document.getElementById("lastName")
-    .value =
+  document.getElementById(
+    "lastName"
+  ).value =
     "";
 
-  document.getElementById("fatherName")
-    .value =
+  document.getElementById(
+    "fatherName"
+  ).value =
     "";
 
-  document.getElementById("birthday")
-    .value =
+  document.getElementById(
+    "birthday"
+  ).value =
     "";
 
-  document.getElementById("note")
-    .value =
-    "";
-
-
-  document.getElementById("phones")
-    .innerHTML =
-    "";
-
-  document.getElementById("emails")
-    .innerHTML =
-    "";
-
-  document.getElementById("addresses")
-    .innerHTML =
+  document.getElementById(
+    "note"
+  ).value =
     "";
 
 
-  document.getElementById("photo")
-    .value =
+  document.getElementById(
+    "phones"
+  ).innerHTML =
+    "";
+
+  document.getElementById(
+    "emails"
+  ).innerHTML =
+    "";
+
+  document.getElementById(
+    "addresses"
+  ).innerHTML =
     "";
 
 
-  document.getElementById("photoPreview")
-    .classList.add("hidden");
+  document.getElementById(
+    "photo"
+  ).value =
+    "";
+
+
+  document.getElementById(
+    "photoPreview"
+  ).classList.add(
+    "hidden"
+  );
 
 
   addPhone();
+
   addEmail();
+
   addAddress();
 
 
-  document.getElementById("formModal")
-    .style.display =
+  document.getElementById(
+    "formModal"
+  ).style.display =
     "flex";
+
 }
 
 
@@ -1443,105 +2203,133 @@ function openAddModal() {
 
 function openEditModal(contact) {
 
-  document.getElementById("formTitle")
-    .textContent =
+  document.getElementById(
+    "formTitle"
+  ).textContent =
     "კონტაქტის რედაქტირება";
 
 
-  document.getElementById("contactId")
-    .value =
+  document.getElementById(
+    "contactId"
+  ).value =
     contact.id;
 
 
-  document.getElementById("firstName")
-    .value =
+  document.getElementById(
+    "firstName"
+  ).value =
     contact.first_name || "";
 
 
-  document.getElementById("lastName")
-    .value =
+  document.getElementById(
+    "lastName"
+  ).value =
     contact.last_name || "";
 
 
-  document.getElementById("fatherName")
-    .value =
+  document.getElementById(
+    "fatherName"
+  ).value =
     contact.father_name || "";
 
 
-  document.getElementById("birthday")
-    .value =
+  document.getElementById(
+    "birthday"
+  ).value =
     contact.birthday || "";
 
 
-  document.getElementById("note")
-    .value =
+  document.getElementById(
+    "note"
+  ).value =
     contact.note || "";
 
 
-  document.getElementById("phones")
-    .innerHTML =
+  document.getElementById(
+    "phones"
+  ).innerHTML =
     "";
 
 
   (contact.contact_phones || [])
-    .forEach(phone =>
-      addPhone(phone.phone)
+    .forEach(
+      phone =>
+        addPhone(
+          phone.phone
+        )
     );
 
 
-  document.getElementById("emails")
-    .innerHTML =
+  document.getElementById(
+    "emails"
+  ).innerHTML =
     "";
 
 
   (contact.contact_emails || [])
-    .forEach(email =>
-      addEmail(email.email)
+    .forEach(
+      email =>
+        addEmail(
+          email.email
+        )
     );
 
 
-  document.getElementById("addresses")
-    .innerHTML =
+  document.getElementById(
+    "addresses"
+  ).innerHTML =
     "";
 
 
   (contact.contact_addresses || [])
-    .forEach(address =>
-      addAddress(
-        address.address,
-        address.map_url
-      )
+    .forEach(
+      address =>
+        addAddress(
+          address.address,
+          address.map_url
+        )
     );
 
 
-  document.getElementById("photo")
-    .value =
+  document.getElementById(
+    "photo"
+  ).value =
     "";
 
 
   const preview =
-    document.getElementById("photoPreview");
+    document.getElementById(
+      "photoPreview"
+    );
 
 
-  if (contact.photo_signed_url) {
+  if (
+    contact.photo_signed_url
+  ) {
 
     preview.src =
       contact.photo_signed_url;
 
-    preview.classList.remove("hidden");
+    preview.classList.remove(
+      "hidden"
+    );
 
   } else {
 
     preview.src = "";
 
-    preview.classList.add("hidden");
+    preview.classList.add(
+      "hidden"
+    );
 
   }
 
 
-  document.getElementById("formModal")
-    .style.display =
+  document.getElementById(
+    "formModal"
+  ).style.display =
     "flex";
+
 }
 
 
@@ -1552,7 +2340,10 @@ function openEditModal(contact) {
 function addPhone(value = "") {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.className =
     "row";
@@ -1577,8 +2368,12 @@ function addPhone(value = "") {
   `;
 
 
-  document.getElementById("phones")
+  document
+    .getElementById(
+      "phones"
+    )
     .appendChild(div);
+
 }
 
 
@@ -1589,7 +2384,10 @@ function addPhone(value = "") {
 function addEmail(value = "") {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.className =
     "row";
@@ -1615,8 +2413,12 @@ function addEmail(value = "") {
   `;
 
 
-  document.getElementById("emails")
+  document
+    .getElementById(
+      "emails"
+    )
     .appendChild(div);
+
 }
 
 
@@ -1630,7 +2432,10 @@ function addAddress(
 ) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.className =
     "item";
@@ -1639,9 +2444,7 @@ function addAddress(
   div.innerHTML = `
 
     <div class="item-title">
-
-      საცხოვრებელი
-
+      🏠 საცხოვრებელი
     </div>
 
 
@@ -1657,7 +2460,7 @@ function addAddress(
 
     <input
       class="map-input"
-      placeholder="რუკის ბმული"
+      placeholder="რუკის ბმული (სურვილისამებრ)"
       value="${escapeHtml(map)}"
     >
 
@@ -1678,8 +2481,12 @@ function addAddress(
   `;
 
 
-  document.getElementById("addresses")
+  document
+    .getElementById(
+      "addresses"
+    )
     .appendChild(div);
+
 }
 
 
@@ -1698,11 +2505,42 @@ function previewPhoto(event) {
   }
 
 
-  if (!file.type.startsWith("image/")) {
+  if (
+    !file.type.startsWith(
+      "image/"
+    )
+  ) {
 
-    alert("გთხოვ, აირჩიე მხოლოდ ფოტო.");
+    alert(
+      "გთხოვ, აირჩიე მხოლოდ ფოტო."
+    );
 
-    event.target.value = "";
+
+    event.target.value =
+      "";
+
+
+    return;
+  }
+
+
+  /*
+     10 MB ზომის ლიმიტი.
+  */
+
+  if (
+    file.size >
+    10 * 1024 * 1024
+  ) {
+
+    alert(
+      "ფოტოს ზომა არ უნდა აღემატებოდეს 10 MB-ს."
+    );
+
+
+    event.target.value =
+      "";
+
 
     return;
   }
@@ -1712,22 +2550,30 @@ function previewPhoto(event) {
     new FileReader();
 
 
-  reader.onload = event => {
+  reader.onload =
+    event => {
 
-    const preview =
-      document.getElementById("photoPreview");
-
-
-    preview.src =
-      event.target.result;
-
-
-    preview.classList.remove("hidden");
-
-  };
+      const preview =
+        document.getElementById(
+          "photoPreview"
+        );
 
 
-  reader.readAsDataURL(file);
+      preview.src =
+        event.target.result;
+
+
+      preview.classList.remove(
+        "hidden"
+      );
+
+    };
+
+
+  reader.readAsDataURL(
+    file
+  );
+
 }
 
 
@@ -1739,48 +2585,71 @@ async function saveContact() {
 
   if (!isAdmin) {
 
-    alert("უფლება არ გაქვს.");
+    alert(
+      "უფლება არ გაქვს."
+    );
 
     return;
   }
 
 
   const id =
-    document.getElementById("contactId")
+    document
+      .getElementById(
+        "contactId"
+      )
       .value;
 
 
   const firstName =
-    document.getElementById("firstName")
+    document
+      .getElementById(
+        "firstName"
+      )
       .value
       .trim();
 
 
   const lastName =
-    document.getElementById("lastName")
+    document
+      .getElementById(
+        "lastName"
+      )
       .value
       .trim();
 
 
   const fatherName =
-    document.getElementById("fatherName")
+    document
+      .getElementById(
+        "fatherName"
+      )
       .value
       .trim();
 
 
   const birthday =
-    document.getElementById("birthday")
+    document
+      .getElementById(
+        "birthday"
+      )
       .value ||
     null;
 
 
   const note =
-    document.getElementById("note")
+    document
+      .getElementById(
+        "note"
+      )
       .value
       .trim();
 
 
-  if (!firstName || !lastName) {
+  if (
+    !firstName ||
+    !lastName
+  ) {
 
     alert(
       "სახელი და გვარი აუცილებელია."
@@ -1814,9 +2683,7 @@ async function saveContact() {
     id;
 
 
-  /* =====================================================
-     CREATE / UPDATE CONTACT
-  ===================================================== */
+  /* CREATE / UPDATE */
 
   if (id) {
 
@@ -1826,7 +2693,10 @@ async function saveContact() {
       await supabaseClient
         .from("contacts")
         .update(payload)
-        .eq("id", id);
+        .eq(
+          "id",
+          id
+        );
 
 
     if (error) {
@@ -1865,12 +2735,11 @@ async function saveContact() {
 
     contactId =
       data.id;
+
   }
 
 
-  /* =====================================================
-     PHONES
-  ===================================================== */
+  /* PHONES */
 
   const {
     error: phoneDeleteError
@@ -1878,7 +2747,10 @@ async function saveContact() {
     await supabaseClient
       .from("contact_phones")
       .delete()
-      .eq("contact_id", contactId);
+      .eq(
+        "contact_id",
+        contactId
+      );
 
 
   if (phoneDeleteError) {
@@ -1902,19 +2774,22 @@ async function saveContact() {
 
   const phones =
     phoneInputs
-      .map(input =>
-        input.value.trim()
+      .map(
+        input =>
+          input.value.trim()
       )
       .filter(Boolean)
-      .map(phone => ({
+      .map(
+        phone => ({
 
-        contact_id:
-          contactId,
+          contact_id:
+            contactId,
 
-        phone:
-          phone
+          phone:
+            phone
 
-      }));
+        })
+      );
 
 
   if (phones.length) {
@@ -1936,12 +2811,11 @@ async function saveContact() {
 
       return;
     }
+
   }
 
 
-  /* =====================================================
-     EMAILS
-  ===================================================== */
+  /* EMAILS */
 
   const {
     error: emailDeleteError
@@ -1949,7 +2823,10 @@ async function saveContact() {
     await supabaseClient
       .from("contact_emails")
       .delete()
-      .eq("contact_id", contactId);
+      .eq(
+        "contact_id",
+        contactId
+      );
 
 
   if (emailDeleteError) {
@@ -1973,19 +2850,22 @@ async function saveContact() {
 
   const emails =
     emailInputs
-      .map(input =>
-        input.value.trim()
+      .map(
+        input =>
+          input.value.trim()
       )
       .filter(Boolean)
-      .map(email => ({
+      .map(
+        email => ({
 
-        contact_id:
-          contactId,
+          contact_id:
+            contactId,
 
-        email:
-          email
+          email:
+            email
 
-      }));
+        })
+      );
 
 
   if (emails.length) {
@@ -2007,12 +2887,11 @@ async function saveContact() {
 
       return;
     }
+
   }
 
 
-  /* =====================================================
-     ADDRESSES
-  ===================================================== */
+  /* ADDRESSES */
 
   const {
     error: addressDeleteError
@@ -2020,7 +2899,10 @@ async function saveContact() {
     await supabaseClient
       .from("contact_addresses")
       .delete()
-      .eq("contact_id", contactId);
+      .eq(
+        "contact_id",
+        contactId
+      );
 
 
   if (addressDeleteError) {
@@ -2044,40 +2926,46 @@ async function saveContact() {
 
   const addresses =
     addressBlocks
-      .map(block => ({
+      .map(
+        block => ({
 
-        address:
-          block
-            .querySelector(
-              ".address-input"
-            )
-            ?.value
-            .trim(),
+          address:
+            block
+              .querySelector(
+                ".address-input"
+              )
+              ?.value
+              .trim(),
 
-        map_url:
-          block
-            .querySelector(
-              ".map-input"
-            )
-            ?.value
-            .trim()
+          map_url:
+            block
+              .querySelector(
+                ".map-input"
+              )
+              ?.value
+              .trim()
 
-      }))
-      .filter(item =>
-        item.address
+        })
       )
-      .map(item => ({
+      .filter(
+        item =>
+          item.address
+      )
+      .map(
+        item => ({
 
-        contact_id:
-          contactId,
+          contact_id:
+            contactId,
 
-        address:
-          item.address,
+          address:
+            item.address,
 
-        map_url:
-          item.map_url || null
+          map_url:
+            item.map_url ||
+            null
 
-      }));
+        })
+      );
 
 
   if (addresses.length) {
@@ -2086,7 +2974,9 @@ async function saveContact() {
       error
     } =
       await supabaseClient
-        .from("contact_addresses")
+        .from(
+          "contact_addresses"
+        )
         .insert(addresses);
 
 
@@ -2099,15 +2989,17 @@ async function saveContact() {
 
       return;
     }
+
   }
 
 
-  /* =====================================================
-     PHOTO — PRIVATE STORAGE
-  ===================================================== */
+  /* PHOTO */
 
   const photoFile =
-    document.getElementById("photo")
+    document
+      .getElementById(
+        "photo"
+      )
       .files[0];
 
 
@@ -2121,15 +3013,20 @@ async function saveContact() {
 
 
     const allowedExtensions = [
+
       "jpg",
       "jpeg",
       "png",
       "webp",
       "gif"
+
     ];
 
 
-    if (!allowedExtensions.includes(extension)) {
+    if (
+      !allowedExtensions
+        .includes(extension)
+    ) {
 
       alert(
         "დაშვებულია JPG, JPEG, PNG, WEBP ან GIF ფოტო."
@@ -2143,23 +3040,26 @@ async function saveContact() {
       `${contactId}-${Date.now()}.${extension}`;
 
 
-    /*
-       ფოტოს ატვირთვა Private Bucket-ში
-    */
-
     const {
       error: uploadError
     } =
       await supabaseClient
         .storage
-        .from("contact-photos")
+        .from(
+          "contact-photos"
+        )
         .upload(
           path,
           photoFile,
           {
-            cacheControl: "3600",
-            upsert: false,
-            contentType: photoFile.type
+            cacheControl:
+              "3600",
+
+            upsert:
+              false,
+
+            contentType:
+              photoFile.type
           }
         );
 
@@ -2174,14 +3074,6 @@ async function saveContact() {
       return;
     }
 
-
-    /*
-       IMPORTANT:
-
-       photo_url-ში აღარ ვინახავთ public URL-ს.
-
-       ვინახავთ მხოლოდ Storage PATH-ს.
-    */
 
     const {
       error: photoDbError
@@ -2209,17 +3101,17 @@ async function saveContact() {
 
       return;
     }
+
   }
 
 
-  /* =====================================================
-     FINISH
-  ===================================================== */
-
-  closeModal("formModal");
+  closeModal(
+    "formModal"
+  );
 
 
   await loadContacts();
+
 }
 
 
@@ -2229,7 +3121,10 @@ async function saveContact() {
 
 async function deleteCurrentContact() {
 
-  if (!isAdmin || !currentContact) {
+  if (
+    !isAdmin ||
+    !currentContact
+  ) {
     return;
   }
 
@@ -2244,11 +3139,6 @@ async function deleteCurrentContact() {
     return;
   }
 
-
-  /*
-     ჯერ contact-ის ფოტო path-ს ვინახავთ,
-     რათა Storage-იდანაც წავშალოთ.
-  */
 
   const photoPath =
     currentContact.photo_url;
@@ -2277,18 +3167,18 @@ async function deleteCurrentContact() {
   }
 
 
-  /*
-     Storage-იდან ფოტოს წაშლა.
-  */
-
   if (
     photoPath &&
-    !photoPath.startsWith("http")
+    !photoPath.startsWith(
+      "http"
+    )
   ) {
 
     await supabaseClient
       .storage
-      .from("contact-photos")
+      .from(
+        "contact-photos"
+      )
       .remove([
         photoPath
       ]);
@@ -2296,12 +3186,17 @@ async function deleteCurrentContact() {
   }
 
 
-  closeModal("detailsModal");
+  closeModal(
+    "detailsModal"
+  );
 
-  currentContact = null;
+
+  currentContact =
+    null;
 
 
   await loadContacts();
+
 }
 
 
@@ -2309,15 +3204,49 @@ async function deleteCurrentContact() {
    AGE
 ========================================================= */
 
-function calculateAge(date) {
+function parseDateLocal(date) {
 
   if (!date) {
-    return "ასაკი უცნობია";
+    return null;
   }
 
 
+  const parts =
+    String(date)
+      .split("-")
+      .map(Number);
+
+
+  if (
+    parts.length !== 3 ||
+    parts.some(
+      Number.isNaN
+    )
+  ) {
+    return null;
+  }
+
+
+  return new Date(
+    parts[0],
+    parts[1] - 1,
+    parts[2]
+  );
+
+}
+
+
+function calculateAge(date) {
+
   const birth =
-    new Date(date);
+    parseDateLocal(date);
+
+
+  if (!birth) {
+
+    return "ასაკი უცნობია";
+
+  }
 
 
   const today =
@@ -2349,6 +3278,7 @@ function calculateAge(date) {
 
 
   return age + " წლის";
+
 }
 
 
@@ -2358,20 +3288,28 @@ function calculateAge(date) {
 
 function isUpcomingBirthday(date) {
 
-  if (!date) {
+  const birth =
+    parseDateLocal(date);
+
+
+  if (!birth) {
     return false;
   }
-
-
-  const birth =
-    new Date(date);
 
 
   const today =
     new Date();
 
 
-  const next =
+  const todayOnly =
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+
+  let next =
     new Date(
       today.getFullYear(),
       birth.getMonth(),
@@ -2379,27 +3317,35 @@ function isUpcomingBirthday(date) {
     );
 
 
-  if (next < today) {
+  if (
+    next < todayOnly
+  ) {
 
-    next.setFullYear(
-      today.getFullYear() + 1
-    );
+    next =
+      new Date(
+        today.getFullYear() + 1,
+        birth.getMonth(),
+        birth.getDate()
+      );
 
   }
 
 
   const diff =
-    next - today;
+    next.getTime() -
+    todayOnly.getTime();
 
 
   const days =
-    diff / 86400000;
+    diff /
+    86400000;
 
 
   return (
     days >= 0 &&
     days <= 30
   );
+
 }
 
 
@@ -2409,15 +3355,111 @@ function isUpcomingBirthday(date) {
 
 function formatDate(date) {
 
-  if (!date) {
+  const parsed =
+    parseDateLocal(date);
+
+
+  if (!parsed) {
     return "—";
   }
 
 
-  return new Date(date)
+  return parsed
     .toLocaleDateString(
       "ka-GE"
     );
+
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function loadTheme() {
+
+  const saved =
+    localStorage.getItem(
+      "contactBookTheme"
+    );
+
+
+  if (
+    saved === "dark"
+  ) {
+
+    document.body
+      .classList.add(
+        "dark"
+      );
+
+  }
+
+
+  updateThemeButton();
+
+}
+
+
+function toggleTheme() {
+
+  document.body
+    .classList.toggle(
+      "dark"
+    );
+
+
+  const theme =
+    document.body
+      .classList.contains(
+        "dark"
+      )
+        ? "dark"
+        : "light";
+
+
+  localStorage.setItem(
+    "contactBookTheme",
+    theme
+  );
+
+
+  updateThemeButton();
+
+}
+
+
+function updateThemeButton() {
+
+  const button =
+    document.getElementById(
+      "themeButton"
+    );
+
+
+  if (!button) {
+    return;
+  }
+
+
+  const dark =
+    document.body
+      .classList.contains(
+        "dark"
+      );
+
+
+  button.textContent =
+    dark
+      ? "☀️"
+      : "🌙";
+
+
+  button.title =
+    dark
+      ? "ღია რეჟიმი"
+      : "მუქი რეჟიმი";
+
 }
 
 
@@ -2427,10 +3469,19 @@ function formatDate(date) {
 
 function closeModal(id) {
 
-  document
-    .getElementById(id)
-    .style.display =
-    "none";
+  const modal =
+    document.getElementById(
+      id
+    );
+
+
+  if (modal) {
+
+    modal.style.display =
+      "none";
+
+  }
+
 }
 
 
@@ -2463,12 +3514,65 @@ function escapeHtml(value) {
       "'",
       "&#039;"
     );
+
 }
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    /*
+       Enter ავტორიზაციის ეკრანზე
+    */
+
+    if (
+      event.key === "Enter" &&
+      !document
+        .getElementById(
+          "authScreen"
+        )
+        .classList.contains(
+          "hidden"
+        )
+    ) {
+
+      login();
+
+    }
+
+
+    /*
+       Escape მოდალის დასახურად
+    */
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      closeModal(
+        "detailsModal"
+      );
+
+      closeModal(
+        "formModal"
+      );
+
+    }
+
+  }
+);
 
 
 /* =========================================================
    START
 ========================================================= */
+
+loadTheme();
 
 initializeApp();
 
@@ -2476,4 +3580,3 @@ initializeApp();
 
 </body>
 </html>
-```
