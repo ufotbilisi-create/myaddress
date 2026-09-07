@@ -1,0 +1,2479 @@
+```html
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>საკონტაქტო წიგნი</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+header {
+  background: #111827;
+  color: white;
+  padding: 16px;
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.danger {
+  background: #dc2626;
+  color: white;
+}
+
+.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.search {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+.search input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 16px 40px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  cursor: pointer;
+  transition: .2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #e5e7eb;
+}
+
+.card-body {
+  padding: 12px;
+  text-align: center;
+}
+
+.card-name {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.card-age {
+  margin-top: 5px;
+  color: #6b7280;
+}
+
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  z-index: 1000;
+}
+
+.modal {
+  width: 100%;
+  max-width: 700px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.modal h2 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.row > * {
+  flex: 1;
+}
+
+.item {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.item-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.details-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+.detail-line {
+  margin: 8px 0;
+}
+
+.detail-label {
+  font-weight: bold;
+}
+
+.address-map {
+  display: inline-block;
+  margin-top: 7px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 5px 25px rgba(0,0,0,.12);
+}
+
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.status {
+  text-align: center;
+  margin: 15px;
+  color: #6b7280;
+}
+
+.birthday {
+  background: #fef3c7;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 8px;
+}
+
+.admin-only {
+  display: none;
+}
+
+body.is-admin .admin-only {
+  display: inline-block;
+}
+
+.preview {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.photo-error {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-size: 14px;
+}
+
+@media(max-width:600px) {
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .card-name {
+    font-size: 15px;
+  }
+
+  .modal {
+    padding: 15px;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     AUTH
+========================= -->
+
+<div id="authScreen" class="auth-screen">
+
+  <div class="auth-box">
+
+    <h1>📕 საკონტაქტო წიგნი</h1>
+
+    <div class="form-group">
+      <label>ელფოსტა</label>
+      <input
+        id="authEmail"
+        type="email"
+        placeholder="ელფოსტა"
+      >
+    </div>
+
+    <div class="form-group">
+      <label>პაროლი</label>
+      <input
+        id="authPassword"
+        type="password"
+        placeholder="პაროლი"
+      >
+    </div>
+
+    <div class="actions">
+
+      <button class="primary" onclick="login()">
+        შესვლა
+      </button>
+
+      <button class="secondary" onclick="register()">
+        რეგისტრაცია
+      </button>
+
+    </div>
+
+    <p id="authMessage"></p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     APP
+========================= -->
+
+<div id="app" class="hidden">
+
+<header>
+
+  <div class="header-inner">
+
+    <div class="logo">
+      📕 საკონტაქტო წიგნი
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        class="primary admin-only"
+        onclick="openAddModal()"
+      >
+        + კონტაქტი
+      </button>
+
+      <button
+        class="secondary"
+        onclick="logout()"
+      >
+        გასვლა
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<div class="search">
+
+  <input
+    id="searchInput"
+    type="search"
+    placeholder="🔎 მოძებნე სახელი, გვარი, ტელეფონი, მისამართი..."
+    oninput="renderContacts()"
+  >
+
+</div>
+
+
+<div class="container">
+
+  <div id="status" class="status">
+    იტვირთება...
+  </div>
+
+  <div id="cards" class="cards"></div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     DETAILS MODAL
+========================= -->
+
+<div id="detailsModal" class="modal-bg">
+
+  <div class="modal">
+
+    <h2>კონტაქტის ინფორმაცია</h2>
+
+    <div id="detailsContent"></div>
+
+    <div class="actions">
+
+      <button
+        class="secondary"
+        onclick="closeModal('detailsModal')"
+      >
+        დახურვა
+      </button>
+
+      <button
+        id="editButton"
+        class="primary admin-only"
+        onclick="editCurrentContact()"
+      >
+        რედაქტირება
+      </button>
+
+      <button
+        id="deleteButton"
+        class="danger admin-only"
+        onclick="deleteCurrentContact()"
+      >
+        წაშლა
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     CONTACT FORM
+========================= -->
+
+<div id="formModal" class="modal-bg">
+
+  <div class="modal">
+
+    <h2 id="formTitle">
+      ახალი კონტაქტი
+    </h2>
+
+    <input
+      type="hidden"
+      id="contactId"
+    >
+
+    <div class="form-group">
+
+      <label>სახელი *</label>
+
+      <input id="firstName">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>გვარი *</label>
+
+      <input id="lastName">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>მამის სახელი</label>
+
+      <input id="fatherName">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>დაბადების თარიღი</label>
+
+      <input
+        id="birthday"
+        type="date"
+      >
+
+    </div>
+
+
+    <!-- PHONES -->
+
+    <div class="form-group">
+
+      <label>ტელეფონები</label>
+
+      <div id="phones"></div>
+
+      <button
+        class="secondary"
+        onclick="addPhone()"
+      >
+        + ტელეფონი
+      </button>
+
+    </div>
+
+
+    <!-- EMAILS -->
+
+    <div class="form-group">
+
+      <label>ელფოსტები</label>
+
+      <div id="emails"></div>
+
+      <button
+        class="secondary"
+        onclick="addEmail()"
+      >
+        + ელფოსტა
+      </button>
+
+    </div>
+
+
+    <!-- ADDRESSES -->
+
+    <div class="form-group">
+
+      <label>საცხოვრებელი მისამართები</label>
+
+      <div id="addresses"></div>
+
+      <button
+        class="secondary"
+        onclick="addAddress()"
+      >
+        + საცხოვრებელი
+      </button>
+
+    </div>
+
+
+    <!-- PHOTO -->
+
+    <div class="form-group">
+
+      <label>ფოტო</label>
+
+      <input
+        id="photo"
+        type="file"
+        accept="image/*"
+        onchange="previewPhoto(event)"
+      >
+
+      <img
+        id="photoPreview"
+        class="preview hidden"
+      >
+
+    </div>
+
+
+    <!-- NOTE -->
+
+    <div class="form-group">
+
+      <label>შენიშვნა</label>
+
+      <textarea id="note"></textarea>
+
+    </div>
+
+
+    <div class="actions">
+
+      <button
+        class="primary"
+        onclick="saveContact()"
+      >
+        შენახვა
+      </button>
+
+      <button
+        class="secondary"
+        onclick="closeModal('formModal')"
+      >
+        გაუქმება
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  "https://cyhtxolsinjakwzkrxqh.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_kqsEAGdKqnBplzg4PPKnrQ_CqM-WXJZ";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+let contacts = [];
+let currentContact = null;
+let isAdmin = false;
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function login() {
+
+  const email =
+    document
+      .getElementById("authEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("authPassword")
+      .value;
+
+  if (!email || !password) {
+
+    document.getElementById("authMessage")
+      .textContent =
+      "შეავსე ელფოსტა და პაროლი.";
+
+    return;
+  }
+
+
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+
+      email,
+      password
+
+    });
+
+
+  if (error) {
+
+    document.getElementById("authMessage")
+      .textContent =
+      error.message;
+
+    return;
+  }
+
+
+  await initializeApp();
+}
+
+
+async function register() {
+
+  const email =
+    document
+      .getElementById("authEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("authPassword")
+      .value;
+
+
+  if (!email || !password) {
+
+    document.getElementById("authMessage")
+      .textContent =
+      "შეავსე ელფოსტა და პაროლი.";
+
+    return;
+  }
+
+
+  if (password.length < 6) {
+
+    document.getElementById("authMessage")
+      .textContent =
+      "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს.";
+
+    return;
+  }
+
+
+  const { error } =
+    await supabaseClient.auth.signUp({
+
+      email,
+      password
+
+    });
+
+
+  if (error) {
+
+    document.getElementById("authMessage")
+      .textContent =
+      error.message;
+
+    return;
+  }
+
+
+  document.getElementById("authMessage")
+    .textContent =
+    "რეგისტრაცია დასრულდა. თუ ელფოსტის დადასტურება ჩართულია, შეამოწმე ელფოსტა.";
+}
+
+
+async function logout() {
+
+  await supabaseClient.auth.signOut();
+
+  location.reload();
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+async function initializeApp() {
+
+  const {
+    data: {
+      session
+    }
+  } =
+    await supabaseClient.auth.getSession();
+
+
+  if (!session) {
+
+    document
+      .getElementById("authScreen")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("app")
+      .classList.add("hidden");
+
+    return;
+  }
+
+
+  document
+    .getElementById("authScreen")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+
+  await checkAdmin();
+
+  await loadContacts();
+}
+
+
+/* =========================================================
+   ADMIN CHECK
+========================================================= */
+
+async function checkAdmin() {
+
+  isAdmin = false;
+
+
+  const {
+    data: {
+      user
+    }
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if (!user) return;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", user.id)
+      .maybeSingle();
+
+
+  if (!error && data) {
+
+    isAdmin =
+      data.is_admin === true;
+
+  }
+
+
+  document.body.classList.toggle(
+    "is-admin",
+    isAdmin
+  );
+}
+
+
+/* =========================================================
+   LOAD CONTACTS
+========================================================= */
+
+async function loadContacts() {
+
+  document.getElementById("status")
+    .textContent =
+    "იტვირთება...";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("contacts")
+      .select(`
+        *,
+        contact_phones(*),
+        contact_emails(*),
+        contact_addresses(*)
+      `)
+      .order("first_name");
+
+
+  if (error) {
+
+    document.getElementById("status")
+      .textContent =
+      "შეცდომა: " + error.message;
+
+    return;
+  }
+
+
+  contacts = data || [];
+
+
+  /*
+     PRIVATE STORAGE
+
+     photo_url-ში ვინახავთ მხოლოდ Storage path-ს.
+     მაგალითად:
+
+     123-1757261234567.jpg
+  */
+
+  for (const contact of contacts) {
+
+    contact.photo_signed_url = null;
+
+
+    if (!contact.photo_url) {
+      continue;
+    }
+
+
+    /*
+       ახალი სისტემის ფოტო:
+       photo_url არის Storage path.
+    */
+
+    const {
+      data: signedData,
+      error: signedError
+    } =
+      await supabaseClient
+        .storage
+        .from("contact-photos")
+        .createSignedUrl(
+          contact.photo_url,
+          3600
+        );
+
+
+    if (!signedError && signedData) {
+
+      contact.photo_signed_url =
+        signedData.signedUrl;
+
+    }
+
+  }
+
+
+  renderContacts();
+}
+
+
+/* =========================================================
+   RENDER CONTACTS
+========================================================= */
+
+function renderContacts() {
+
+  const query =
+    document
+      .getElementById("searchInput")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const filtered =
+    contacts.filter(contact => {
+
+      const text = [
+
+        contact.first_name,
+        contact.last_name,
+        contact.father_name,
+        contact.birthday,
+
+        ...(contact.contact_phones || [])
+          .map(x => x.phone),
+
+        ...(contact.contact_emails || [])
+          .map(x => x.email),
+
+        ...(contact.contact_addresses || [])
+          .map(x => x.address),
+
+        contact.note
+
+      ]
+      .join(" ")
+      .toLowerCase();
+
+
+      return text.includes(query);
+
+    });
+
+
+  const cards =
+    document.getElementById("cards");
+
+
+  cards.innerHTML = "";
+
+
+  if (!filtered.length) {
+
+    document.getElementById("status")
+      .textContent =
+      "კონტაქტები ვერ მოიძებნა.";
+
+    return;
+  }
+
+
+  document.getElementById("status")
+    .textContent =
+    `${filtered.length} კონტაქტი`;
+
+
+  filtered.forEach(contact => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "card";
+
+
+    card.onclick = () =>
+      openDetails(contact);
+
+
+    const image =
+      contact.photo_signed_url ||
+      "https://via.placeholder.com/500?text=Photo";
+
+
+    card.innerHTML = `
+
+      <img
+        src="${escapeHtml(image)}"
+        alt="ფოტო"
+        onerror="this.src='https://via.placeholder.com/500?text=Photo'"
+      >
+
+      <div class="card-body">
+
+        <div class="card-name">
+
+          ${escapeHtml(contact.first_name || "")}
+          ${escapeHtml(contact.last_name || "")}
+
+        </div>
+
+        <div class="card-age">
+
+          ${calculateAge(contact.birthday)}
+
+        </div>
+
+      </div>
+
+    `;
+
+
+    cards.appendChild(card);
+
+  });
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+function openDetails(contact) {
+
+  currentContact = contact;
+
+
+  const phones =
+    contact.contact_phones || [];
+
+  const emails =
+    contact.contact_emails || [];
+
+  const addresses =
+    contact.contact_addresses || [];
+
+
+  let html = "";
+
+
+  if (contact.photo_signed_url) {
+
+    html += `
+
+      <img
+        class="details-photo"
+        src="${escapeHtml(contact.photo_signed_url)}"
+        alt="ფოტო"
+      >
+
+    `;
+
+  }
+
+
+  html += `
+
+    <div class="detail-line">
+
+      <span class="detail-label">
+        სახელი:
+      </span>
+
+      ${escapeHtml(contact.first_name || "")}
+
+    </div>
+
+
+    <div class="detail-line">
+
+      <span class="detail-label">
+        გვარი:
+      </span>
+
+      ${escapeHtml(contact.last_name || "")}
+
+    </div>
+
+
+    <div class="detail-line">
+
+      <span class="detail-label">
+        მამის სახელი:
+      </span>
+
+      ${escapeHtml(contact.father_name || "—")}
+
+    </div>
+
+
+    <div class="detail-line">
+
+      <span class="detail-label">
+        დაბადება:
+      </span>
+
+      ${formatDate(contact.birthday)}
+
+    </div>
+
+
+    <div class="detail-line">
+
+      <span class="detail-label">
+        ასაკი:
+      </span>
+
+      ${calculateAge(contact.birthday)}
+
+    </div>
+
+  `;
+
+
+  if (isUpcomingBirthday(contact.birthday)) {
+
+    html += `
+
+      <div class="birthday">
+
+        🎂 დაბადების დღე ახლოვდება!
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* PHONES */
+
+  html += `
+    <hr>
+    <h3>📞 ტელეფონები</h3>
+  `;
+
+
+  if (!phones.length) {
+
+    html += `
+      <p>არ არის მითითებული</p>
+    `;
+
+  } else {
+
+    phones.forEach(phone => {
+
+      html += `
+
+        <div class="item">
+
+          📞
+
+          <a
+            href="tel:${escapeHtml(phone.phone)}"
+          >
+            ${escapeHtml(phone.phone)}
+          </a>
+
+        </div>
+
+      `;
+
+    });
+
+  }
+
+
+  /* EMAILS */
+
+  html += `
+    <h3>✉️ ელფოსტები</h3>
+  `;
+
+
+  if (!emails.length) {
+
+    html += `
+      <p>არ არის მითითებული</p>
+    `;
+
+  } else {
+
+    emails.forEach(email => {
+
+      html += `
+
+        <div class="item">
+
+          ✉️
+
+          <a
+            href="mailto:${escapeHtml(email.email)}"
+          >
+            ${escapeHtml(email.email)}
+          </a>
+
+        </div>
+
+      `;
+
+    });
+
+  }
+
+
+  /* ADDRESSES */
+
+  html += `
+    <h3>🏠 საცხოვრებელი მისამართები</h3>
+  `;
+
+
+  if (!addresses.length) {
+
+    html += `
+      <p>არ არის მითითებული</p>
+    `;
+
+  } else {
+
+    addresses.forEach((address, index) => {
+
+      const mapUrl =
+        address.map_url ||
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address.address)}`;
+
+
+      html += `
+
+        <div class="item">
+
+          <div class="item-title">
+
+            საცხოვრებელი ${index + 1}
+
+          </div>
+
+
+          <div>
+
+            ${escapeHtml(address.address || "")}
+
+          </div>
+
+
+          <a
+            class="address-map"
+            href="${escapeHtml(mapUrl)}"
+            target="_blank"
+            rel="noopener"
+          >
+
+            🗺️ ამ მისამართის რუკაზე გახსნა
+
+          </a>
+
+        </div>
+
+      `;
+
+    });
+
+  }
+
+
+  /* NOTE */
+
+  if (contact.note) {
+
+    html += `
+
+      <h3>📝 შენიშვნა</h3>
+
+      <div class="item">
+
+        ${escapeHtml(contact.note)}
+
+      </div>
+
+    `;
+
+  }
+
+
+  document.getElementById("detailsContent")
+    .innerHTML =
+    html;
+
+
+  document.getElementById("detailsModal")
+    .style.display =
+    "flex";
+}
+
+
+function editCurrentContact() {
+
+  if (!isAdmin || !currentContact) {
+    return;
+  }
+
+
+  closeModal("detailsModal");
+
+  openEditModal(currentContact);
+}
+
+
+/* =========================================================
+   ADD MODAL
+========================================================= */
+
+function openAddModal() {
+
+  if (!isAdmin) return;
+
+
+  document.getElementById("formTitle")
+    .textContent =
+    "ახალი კონტაქტი";
+
+
+  document.getElementById("contactId")
+    .value =
+    "";
+
+
+  document.getElementById("firstName")
+    .value =
+    "";
+
+  document.getElementById("lastName")
+    .value =
+    "";
+
+  document.getElementById("fatherName")
+    .value =
+    "";
+
+  document.getElementById("birthday")
+    .value =
+    "";
+
+  document.getElementById("note")
+    .value =
+    "";
+
+
+  document.getElementById("phones")
+    .innerHTML =
+    "";
+
+  document.getElementById("emails")
+    .innerHTML =
+    "";
+
+  document.getElementById("addresses")
+    .innerHTML =
+    "";
+
+
+  document.getElementById("photo")
+    .value =
+    "";
+
+
+  document.getElementById("photoPreview")
+    .classList.add("hidden");
+
+
+  addPhone();
+  addEmail();
+  addAddress();
+
+
+  document.getElementById("formModal")
+    .style.display =
+    "flex";
+}
+
+
+/* =========================================================
+   EDIT MODAL
+========================================================= */
+
+function openEditModal(contact) {
+
+  document.getElementById("formTitle")
+    .textContent =
+    "კონტაქტის რედაქტირება";
+
+
+  document.getElementById("contactId")
+    .value =
+    contact.id;
+
+
+  document.getElementById("firstName")
+    .value =
+    contact.first_name || "";
+
+
+  document.getElementById("lastName")
+    .value =
+    contact.last_name || "";
+
+
+  document.getElementById("fatherName")
+    .value =
+    contact.father_name || "";
+
+
+  document.getElementById("birthday")
+    .value =
+    contact.birthday || "";
+
+
+  document.getElementById("note")
+    .value =
+    contact.note || "";
+
+
+  document.getElementById("phones")
+    .innerHTML =
+    "";
+
+
+  (contact.contact_phones || [])
+    .forEach(phone =>
+      addPhone(phone.phone)
+    );
+
+
+  document.getElementById("emails")
+    .innerHTML =
+    "";
+
+
+  (contact.contact_emails || [])
+    .forEach(email =>
+      addEmail(email.email)
+    );
+
+
+  document.getElementById("addresses")
+    .innerHTML =
+    "";
+
+
+  (contact.contact_addresses || [])
+    .forEach(address =>
+      addAddress(
+        address.address,
+        address.map_url
+      )
+    );
+
+
+  document.getElementById("photo")
+    .value =
+    "";
+
+
+  const preview =
+    document.getElementById("photoPreview");
+
+
+  if (contact.photo_signed_url) {
+
+    preview.src =
+      contact.photo_signed_url;
+
+    preview.classList.remove("hidden");
+
+  } else {
+
+    preview.src = "";
+
+    preview.classList.add("hidden");
+
+  }
+
+
+  document.getElementById("formModal")
+    .style.display =
+    "flex";
+}
+
+
+/* =========================================================
+   DYNAMIC PHONE
+========================================================= */
+
+function addPhone(value = "") {
+
+  const div =
+    document.createElement("div");
+
+  div.className =
+    "row";
+
+
+  div.innerHTML = `
+
+    <input
+      class="phone-input"
+      placeholder="ტელეფონის ნომერი"
+      value="${escapeHtml(value)}"
+    >
+
+    <button
+      class="danger"
+      type="button"
+      onclick="this.parentElement.remove()"
+    >
+      ×
+    </button>
+
+  `;
+
+
+  document.getElementById("phones")
+    .appendChild(div);
+}
+
+
+/* =========================================================
+   DYNAMIC EMAIL
+========================================================= */
+
+function addEmail(value = "") {
+
+  const div =
+    document.createElement("div");
+
+  div.className =
+    "row";
+
+
+  div.innerHTML = `
+
+    <input
+      class="email-input"
+      type="email"
+      placeholder="ელფოსტა"
+      value="${escapeHtml(value)}"
+    >
+
+    <button
+      class="danger"
+      type="button"
+      onclick="this.parentElement.remove()"
+    >
+      ×
+    </button>
+
+  `;
+
+
+  document.getElementById("emails")
+    .appendChild(div);
+}
+
+
+/* =========================================================
+   DYNAMIC ADDRESS
+========================================================= */
+
+function addAddress(
+  address = "",
+  map = ""
+) {
+
+  const div =
+    document.createElement("div");
+
+  div.className =
+    "item";
+
+
+  div.innerHTML = `
+
+    <div class="item-title">
+
+      საცხოვრებელი
+
+    </div>
+
+
+    <input
+      class="address-input"
+      placeholder="საცხოვრებელი მისამართი"
+      value="${escapeHtml(address)}"
+    >
+
+
+    <br><br>
+
+
+    <input
+      class="map-input"
+      placeholder="რუკის ბმული"
+      value="${escapeHtml(map)}"
+    >
+
+
+    <br><br>
+
+
+    <button
+      class="danger"
+      type="button"
+      onclick="this.parentElement.remove()"
+    >
+
+      საცხოვრებლის წაშლა
+
+    </button>
+
+  `;
+
+
+  document.getElementById("addresses")
+    .appendChild(div);
+}
+
+
+/* =========================================================
+   PHOTO PREVIEW
+========================================================= */
+
+function previewPhoto(event) {
+
+  const file =
+    event.target.files[0];
+
+
+  if (!file) {
+    return;
+  }
+
+
+  if (!file.type.startsWith("image/")) {
+
+    alert("გთხოვ, აირჩიე მხოლოდ ფოტო.");
+
+    event.target.value = "";
+
+    return;
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload = event => {
+
+    const preview =
+      document.getElementById("photoPreview");
+
+
+    preview.src =
+      event.target.result;
+
+
+    preview.classList.remove("hidden");
+
+  };
+
+
+  reader.readAsDataURL(file);
+}
+
+
+/* =========================================================
+   SAVE CONTACT
+========================================================= */
+
+async function saveContact() {
+
+  if (!isAdmin) {
+
+    alert("უფლება არ გაქვს.");
+
+    return;
+  }
+
+
+  const id =
+    document.getElementById("contactId")
+      .value;
+
+
+  const firstName =
+    document.getElementById("firstName")
+      .value
+      .trim();
+
+
+  const lastName =
+    document.getElementById("lastName")
+      .value
+      .trim();
+
+
+  const fatherName =
+    document.getElementById("fatherName")
+      .value
+      .trim();
+
+
+  const birthday =
+    document.getElementById("birthday")
+      .value ||
+    null;
+
+
+  const note =
+    document.getElementById("note")
+      .value
+      .trim();
+
+
+  if (!firstName || !lastName) {
+
+    alert(
+      "სახელი და გვარი აუცილებელია."
+    );
+
+    return;
+  }
+
+
+  const payload = {
+
+    first_name:
+      firstName,
+
+    last_name:
+      lastName,
+
+    father_name:
+      fatherName || null,
+
+    birthday:
+      birthday,
+
+    note:
+      note || null
+
+  };
+
+
+  let contactId =
+    id;
+
+
+  /* =====================================================
+     CREATE / UPDATE CONTACT
+  ===================================================== */
+
+  if (id) {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("contacts")
+        .update(payload)
+        .eq("id", id);
+
+
+    if (error) {
+
+      alert(
+        "კონტაქტის შეცდომა: " +
+        error.message
+      );
+
+      return;
+    }
+
+  } else {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("contacts")
+        .insert(payload)
+        .select()
+        .single();
+
+
+    if (error) {
+
+      alert(
+        "კონტაქტის შექმნის შეცდომა: " +
+        error.message
+      );
+
+      return;
+    }
+
+
+    contactId =
+      data.id;
+  }
+
+
+  /* =====================================================
+     PHONES
+  ===================================================== */
+
+  const {
+    error: phoneDeleteError
+  } =
+    await supabaseClient
+      .from("contact_phones")
+      .delete()
+      .eq("contact_id", contactId);
+
+
+  if (phoneDeleteError) {
+
+    alert(
+      "ტელეფონების განახლების შეცდომა: " +
+      phoneDeleteError.message
+    );
+
+    return;
+  }
+
+
+  const phoneInputs =
+    [
+      ...document.querySelectorAll(
+        ".phone-input"
+      )
+    ];
+
+
+  const phones =
+    phoneInputs
+      .map(input =>
+        input.value.trim()
+      )
+      .filter(Boolean)
+      .map(phone => ({
+
+        contact_id:
+          contactId,
+
+        phone:
+          phone
+
+      }));
+
+
+  if (phones.length) {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("contact_phones")
+        .insert(phones);
+
+
+    if (error) {
+
+      alert(
+        "ტელეფონის შენახვის შეცდომა: " +
+        error.message
+      );
+
+      return;
+    }
+  }
+
+
+  /* =====================================================
+     EMAILS
+  ===================================================== */
+
+  const {
+    error: emailDeleteError
+  } =
+    await supabaseClient
+      .from("contact_emails")
+      .delete()
+      .eq("contact_id", contactId);
+
+
+  if (emailDeleteError) {
+
+    alert(
+      "ელფოსტების განახლების შეცდომა: " +
+      emailDeleteError.message
+    );
+
+    return;
+  }
+
+
+  const emailInputs =
+    [
+      ...document.querySelectorAll(
+        ".email-input"
+      )
+    ];
+
+
+  const emails =
+    emailInputs
+      .map(input =>
+        input.value.trim()
+      )
+      .filter(Boolean)
+      .map(email => ({
+
+        contact_id:
+          contactId,
+
+        email:
+          email
+
+      }));
+
+
+  if (emails.length) {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("contact_emails")
+        .insert(emails);
+
+
+    if (error) {
+
+      alert(
+        "ელფოსტის შენახვის შეცდომა: " +
+        error.message
+      );
+
+      return;
+    }
+  }
+
+
+  /* =====================================================
+     ADDRESSES
+  ===================================================== */
+
+  const {
+    error: addressDeleteError
+  } =
+    await supabaseClient
+      .from("contact_addresses")
+      .delete()
+      .eq("contact_id", contactId);
+
+
+  if (addressDeleteError) {
+
+    alert(
+      "მისამართების განახლების შეცდომა: " +
+      addressDeleteError.message
+    );
+
+    return;
+  }
+
+
+  const addressBlocks =
+    [
+      ...document.querySelectorAll(
+        "#addresses .item"
+      )
+    ];
+
+
+  const addresses =
+    addressBlocks
+      .map(block => ({
+
+        address:
+          block
+            .querySelector(
+              ".address-input"
+            )
+            ?.value
+            .trim(),
+
+        map_url:
+          block
+            .querySelector(
+              ".map-input"
+            )
+            ?.value
+            .trim()
+
+      }))
+      .filter(item =>
+        item.address
+      )
+      .map(item => ({
+
+        contact_id:
+          contactId,
+
+        address:
+          item.address,
+
+        map_url:
+          item.map_url || null
+
+      }));
+
+
+  if (addresses.length) {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("contact_addresses")
+        .insert(addresses);
+
+
+    if (error) {
+
+      alert(
+        "მისამართის შენახვის შეცდომა: " +
+        error.message
+      );
+
+      return;
+    }
+  }
+
+
+  /* =====================================================
+     PHOTO — PRIVATE STORAGE
+  ===================================================== */
+
+  const photoFile =
+    document.getElementById("photo")
+      .files[0];
+
+
+  if (photoFile) {
+
+    const extension =
+      photoFile.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+
+    const allowedExtensions = [
+      "jpg",
+      "jpeg",
+      "png",
+      "webp",
+      "gif"
+    ];
+
+
+    if (!allowedExtensions.includes(extension)) {
+
+      alert(
+        "დაშვებულია JPG, JPEG, PNG, WEBP ან GIF ფოტო."
+      );
+
+      return;
+    }
+
+
+    const path =
+      `${contactId}-${Date.now()}.${extension}`;
+
+
+    /*
+       ფოტოს ატვირთვა Private Bucket-ში
+    */
+
+    const {
+      error: uploadError
+    } =
+      await supabaseClient
+        .storage
+        .from("contact-photos")
+        .upload(
+          path,
+          photoFile,
+          {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: photoFile.type
+          }
+        );
+
+
+    if (uploadError) {
+
+      alert(
+        "ფოტოს ატვირთვის შეცდომა: " +
+        uploadError.message
+      );
+
+      return;
+    }
+
+
+    /*
+       IMPORTANT:
+
+       photo_url-ში აღარ ვინახავთ public URL-ს.
+
+       ვინახავთ მხოლოდ Storage PATH-ს.
+    */
+
+    const {
+      error: photoDbError
+    } =
+      await supabaseClient
+        .from("contacts")
+        .update({
+
+          photo_url:
+            path
+
+        })
+        .eq(
+          "id",
+          contactId
+        );
+
+
+    if (photoDbError) {
+
+      alert(
+        "ფოტოს მონაცემების შენახვის შეცდომა: " +
+        photoDbError.message
+      );
+
+      return;
+    }
+  }
+
+
+  /* =====================================================
+     FINISH
+  ===================================================== */
+
+  closeModal("formModal");
+
+
+  await loadContacts();
+}
+
+
+/* =========================================================
+   DELETE CONTACT
+========================================================= */
+
+async function deleteCurrentContact() {
+
+  if (!isAdmin || !currentContact) {
+    return;
+  }
+
+
+  const ok =
+    confirm(
+      "ნამდვილად გინდა ამ კონტაქტის წაშლა?"
+    );
+
+
+  if (!ok) {
+    return;
+  }
+
+
+  /*
+     ჯერ contact-ის ფოტო path-ს ვინახავთ,
+     რათა Storage-იდანაც წავშალოთ.
+  */
+
+  const photoPath =
+    currentContact.photo_url;
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("contacts")
+      .delete()
+      .eq(
+        "id",
+        currentContact.id
+      );
+
+
+  if (error) {
+
+    alert(
+      "წაშლის შეცდომა: " +
+      error.message
+    );
+
+    return;
+  }
+
+
+  /*
+     Storage-იდან ფოტოს წაშლა.
+  */
+
+  if (
+    photoPath &&
+    !photoPath.startsWith("http")
+  ) {
+
+    await supabaseClient
+      .storage
+      .from("contact-photos")
+      .remove([
+        photoPath
+      ]);
+
+  }
+
+
+  closeModal("detailsModal");
+
+  currentContact = null;
+
+
+  await loadContacts();
+}
+
+
+/* =========================================================
+   AGE
+========================================================= */
+
+function calculateAge(date) {
+
+  if (!date) {
+    return "ასაკი უცნობია";
+  }
+
+
+  const birth =
+    new Date(date);
+
+
+  const today =
+    new Date();
+
+
+  let age =
+    today.getFullYear() -
+    birth.getFullYear();
+
+
+  const month =
+    today.getMonth() -
+    birth.getMonth();
+
+
+  if (
+    month < 0 ||
+    (
+      month === 0 &&
+      today.getDate() <
+      birth.getDate()
+    )
+  ) {
+
+    age--;
+
+  }
+
+
+  return age + " წლის";
+}
+
+
+/* =========================================================
+   UPCOMING BIRTHDAY
+========================================================= */
+
+function isUpcomingBirthday(date) {
+
+  if (!date) {
+    return false;
+  }
+
+
+  const birth =
+    new Date(date);
+
+
+  const today =
+    new Date();
+
+
+  const next =
+    new Date(
+      today.getFullYear(),
+      birth.getMonth(),
+      birth.getDate()
+    );
+
+
+  if (next < today) {
+
+    next.setFullYear(
+      today.getFullYear() + 1
+    );
+
+  }
+
+
+  const diff =
+    next - today;
+
+
+  const days =
+    diff / 86400000;
+
+
+  return (
+    days >= 0 &&
+    days <= 30
+  );
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(date) {
+
+  if (!date) {
+    return "—";
+  }
+
+
+  return new Date(date)
+    .toLocaleDateString(
+      "ka-GE"
+    );
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal(id) {
+
+  document
+    .getElementById(id)
+    .style.display =
+    "none";
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initializeApp();
+
+</script>
+
+</body>
+</html>
+```
